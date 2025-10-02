@@ -8,6 +8,7 @@ A web application for automotive repair services.
 - Node.js (v14 or higher)
 - npm
 - MongoDB
+- React
 
 ### Installation
 
@@ -16,6 +17,7 @@ A web application for automotive repair services.
 git clone <repository-url>
 cd OpravAuto
 ```
+### Backend Setup
 
 2. Navigate to the server directory:
 ```bash
@@ -34,31 +36,42 @@ cp .env.example .env
 
 5. Configure your environment variables in `.env`:
 
-### Running the Application
+### Frontend Setup
 
-#### Development
+1. Navigate to the client directory:
 ```bash
-npm start
+cd client
 ```
 
-This will start the development server with nodemon, which automatically restarts the server when files change.
-
-#### Production
+2. Install dependencies:
 ```bash
-npm run build
-npm run prod
+npm install
+```
+
+3. Start the development server:
+```bash
+npm run dev
 ```
 
 ### Project Structure
 ```
 OpravAuto/
-├── server/
+├── server/          # Backend API (Node.js + Express + TypeScript)
 │   ├── db/
 │   │   └── connection.ts
 │   ├── utils/
 │   │   └── validateEnv.ts
 │   ├── server.ts
 │   ├── package.json
+│   └── tsconfig.json
+├── client/          # Frontend (React + Vite + TypeScript)
+│   ├── public/
+│   ├── src/
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   └── assets/
+│   ├── package.json
+│   ├── vite.config.ts
 │   └── tsconfig.json
 └── README.md
 ```
@@ -75,4 +88,4 @@ OpravAuto/
 - Express.js
 - TypeScript
 - MongoDB
--
+- React
