@@ -1,5 +1,5 @@
 import moongoose from "mongoose";
-import env from '../utils/validateEnv';
+import env from '@utils/validateEnv';
 
 export const connectDB = async () => {
     try {

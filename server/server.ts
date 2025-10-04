@@ -1,6 +1,9 @@
 import express from 'express';
-import { connectDB } from './db/connection';
-import env from './utils/validateEnv';
+import { connectDB } from '@db/connection';
+import env from '@utils/validateEnv';
+
+import vehicleRoutes from '@routes/vehicles.routes';
+
 
 const PORT = env.PORT;
 const app = express();
@@ -10,6 +13,7 @@ app.use(express.json());
 app.use(express.text());
 
 // Routes
+app.use('/api/vehicles', vehicleRoutes);
 
 app.listen(PORT, () => {
     connectDB();
