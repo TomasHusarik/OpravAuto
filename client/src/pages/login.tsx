@@ -1,84 +1,70 @@
-import { Anchor, Button, Checkbox, Divider, Group, Paper, PasswordInput, Stack, Text, TextInput } from '@mantine/core';
+import { authenticateUser } from '@/utils/api';
+import { Button, Center, Divider, Group, Paper, PasswordInput, Stack, Text, TextInput } from '@mantine/core';
 import type { PaperProps } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { upperFirst, useToggle } from '@mantine/hooks';
 
-export function Login(props: PaperProps) {
-  const [type, toggle] = useToggle(['login', 'register']);
+const Login = (props: PaperProps) => {
   const form = useForm({
     initialValues: {
       email: '',
-      name: '',
       password: '',
-      terms: true,
     },
-
     validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
-      password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
+      email: (val: string) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
+      password: (val: string) => (val.length < 6 ? 'Password should include at least 6 characters' : null),
     },
   });
 
+  const handleSubmit = (values: typeof form.values) => {
+    try {
+      authenticateUser(values.email, values.password)
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+
   return (
-    <Paper radius="md" p="lg" withBorder {...props}>
-      <Text size="lg" fw={500}>
-        Welcome to OpravAuto, {type} with
-      </Text>
+    <Center style={{ minHeight: '100vh' }}>
+      <Paper radius="md" p="lg" withBorder {...props} style={{ width: 800, height: 'auto', margin: 20 }}>
+        <Text size="lg" fw={500}>
+          Welcome to OpravAuto
+        </Text>
 
-      <Divider my="lg" />
+        <Divider my="lg" />
 
-      <form onSubmit={form.onSubmit(() => {})}>
-        <Stack>
-          {type === 'register' && (
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <Stack>
             <TextInput
-              label="Name"
-              placeholder="Your name"
-              value={form.values.name}
-              onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
+              required
+              label="Email"
+              placeholder="typeyour@email.com"
+              value={form.values.email}
+              onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
+              error={form.errors.email}
               radius="md"
             />
-          )}
-
-          <TextInput
-            required
-            label="Email"
-            placeholder="hello@mantine.dev"
-            value={form.values.email}
-            onChange={(event) => form.setFieldValue('email', event.currentTarget.value)}
-            error={form.errors.email && 'Invalid email'}
-            radius="md"
-          />
-
-          <PasswordInput
-            required
-            label="Password"
-            placeholder="Your password"
-            value={form.values.password}
-            onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
-            error={form.errors.password && 'Password should include at least 6 characters'}
-            radius="md"
-          />
-
-          {type === 'register' && (
-            <Checkbox
-              label="I accept terms and conditions"
-              checked={form.values.terms}
-              onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
+            <PasswordInput
+              required
+              label="Password"
+              placeholder="Your password"
+              value={form.values.password}
+              onChange={(event) => form.setFieldValue('password', event.currentTarget.value)}
+              error={form.errors.password}
+              radius="md"
             />
-          )}
-        </Stack>
+          </Stack>
 
-        <Group justify="space-between" mt="xl">
-          <Anchor component="button" type="button" c="dimmed" onClick={() => toggle()} size="xs">
-            {type === 'register'
-              ? 'Already have an account? Login'
-              : "Don't have an account? Register"}
-          </Anchor>
-          <Button type="submit" radius="xl">
-            {upperFirst(type)}
-          </Button>
-        </Group>
-      </form>
-    </Paper>
+          <Divider my="lg" />
+
+          <Group justify="flex-end">
+            <Button type="submit" radius="xl">
+              Login
+            </Button>
+          </Group>
+        </form>
+      </Paper>
+    </Center>
   );
-}
+};
+
+export default Login;

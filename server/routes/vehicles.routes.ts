@@ -1,10 +1,5 @@
 import express from 'express';
-import { 
-    addVehicle, 
-    getVehicle, 
-    updateVehicle, 
-    deleteVehicle 
-} from '@controllers/vehicles.controller';
+import { addVehicle, getVehicle, updateVehicle, deleteVehicle } from '@controllers/vehicles.controller';
 
 const router = express.Router();
 

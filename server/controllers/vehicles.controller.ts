@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Vehicle from '@models/Vehicle';
+import Vehicle from '../models/Vehicle';
 
 // POST /vehicles/add-vehicle - Add new vehicle
 export const addVehicle = async (req: Request, res: Response) => {

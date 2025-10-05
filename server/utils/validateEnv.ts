@@ -4,5 +4,6 @@ dotenv.config();
 
 export default cleanEnv(process.env, {
     MONGO_URI: str(),
+    JWT_SECRET: str(),
     PORT: port(),
 });
