@@ -31,7 +31,7 @@ const Login = (props: PaperProps) => {
     try {
       const response = await loginUser(values.email, values.password);
 
-      localStorage.setItem('technician', JSON.stringify(response.technician));
+      localStorage.setItem('user', JSON.stringify(response));
       dispatch({ type: 'LOGIN', payload: response });
       navigate('/orders');
     } catch (error) {

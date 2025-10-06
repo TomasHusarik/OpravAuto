@@ -11,7 +11,6 @@ import classes from './NavbarSimple.module.css';
 import { ActionToggle } from './ActionToggle';
 import { useAuthContext } from '@/utils/authTypes';
 import { getFullName } from '@/utils/helpers';
-import { Technician } from '@/types/Technician';
 
 const data = [
   { link: '/orders', label: 'Orders', icon: IconClipboardList },
@@ -22,8 +21,7 @@ export function NavbarSimple() {
   const navigate = useNavigate();
   const location = useLocation();
   const [active, setActive] = useState('Orders');
-  const { dispatch } = useAuthContext();
-  const [loggedUser, setLoggedUser] = useState<Technician | null>(null);
+  const { user, dispatch } = useAuthContext();
 
   // Update active based on current route
   useEffect(() => {
@@ -51,18 +49,12 @@ export function NavbarSimple() {
   ));
 
   const handleLogOut = () => {
-    localStorage.removeItem('technician');
+    localStorage.removeItem('user');
     dispatch({ type: 'LOGOUT' });
     navigate('/login');
   }
 
-  useEffect(() => {
-    const technician = localStorage.getItem('technician');
-    if (technician) {
-      setLoggedUser(JSON.parse(technician));
-    }
-  }, []);
-
+  console.log('Current user in NavbarSimple:', user);
   return (
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
@@ -83,14 +75,14 @@ export function NavbarSimple() {
           <ActionToggle />
           {/* <Code fw={700}>v1.0.0</Code> */}
         </Group>
-        {loggedUser && links}
+        {user && links}
       </div>
 
-      {loggedUser &&
+      {user &&
         <div className={classes.footer}>
           <a className={classes.link} onClick={(event) => event.preventDefault()}>
             <IconUser className={classes.linkIcon} stroke={1.5} />
-            <span>{getFullName(loggedUser)}</span>
+            <span>{getFullName(user.technician)}</span>
           </a>
           <Divider my="sm" />
 

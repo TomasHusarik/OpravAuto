@@ -4,9 +4,9 @@ import '@mantine/core/styles.css';
 import { AppShell, Burger } from "@mantine/core";
 import { useDisclosure } from '@mantine/hooks';
 import { Technician } from "@/types/Technician";
-import Login from "@pages/Login";
-import Orders from "@pages/Orders";
-import Customers from "@pages/Customers";
+import Login from "@/pages/Login";
+import Orders from "@/pages/Orders";
+import Customers from "@/pages/Customers";
 
 const App = () => {
   const [opened, { toggle }] = useDisclosure();

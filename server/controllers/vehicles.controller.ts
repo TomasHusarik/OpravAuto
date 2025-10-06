@@ -67,6 +67,7 @@ export const addVehicle = async (req: Request, res: Response) => {
 
 // GET /vehicles/get-vehicle/:id - Get vehicle by ID parameter
 export const getVehicle = async (req: Request, res: Response) => {
+
     try {
         const vehicle = await Vehicle.findById(req.params.id);
         
@@ -77,6 +78,23 @@ export const getVehicle = async (req: Request, res: Response) => {
         res.status(200).json(vehicle);
     } catch (error) {
         console.error('Error fetching vehicle:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+// GET /vehicles/get-vehicles/:ownerId - Get vehicle by Ovner ID parameter
+export const getVehicles = async (req: Request, res: Response) => {
+
+    try {
+        const vehicles = await Vehicle.find({ owner: req.params.ownerId });
+        
+        if (!vehicles) {
+            return res.status(404).json({ message: 'Vehicles not found' });
+        }
+        
+        res.status(200).json(vehicles);
+    } catch (error) {
+        console.error('Error fetching vehicles:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };

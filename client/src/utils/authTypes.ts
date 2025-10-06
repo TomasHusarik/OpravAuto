@@ -1,14 +1,20 @@
 import { Technician } from '@/types/Technician';
 import { createContext, useContext } from 'react';
 
+// Define the login response interface
+export interface LoginResponse {
+  technician: Technician;
+  token: string;
+}
+
 // Define the auth state interface
 export interface AuthState {
-  user: Technician | null;
+  user: LoginResponse | null;
 }
 
 // Define the auth actions
 export type AuthAction = 
-  | { type: 'LOGIN'; payload: Technician }
+  | { type: 'LOGIN'; payload: LoginResponse }
   | { type: 'LOGOUT' };
 
 // Define the context type
@@ -29,6 +35,7 @@ export const authReducer = (state: AuthState, action: AuthAction): AuthState => 
     }
 };
 
+// Custom hook to use the AuthContext
 export const useAuthContext = () => {
   const context = useContext(AuthContext);
   if (!context) {
