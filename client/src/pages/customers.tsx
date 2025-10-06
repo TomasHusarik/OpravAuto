@@ -1,8 +1,8 @@
-import React from 'react'
+import CustomerSearch from '@/components/customers/CustomersSearch'
 
 const Customers = () => {
   return (
-    <div>customers</div>
+    <CustomerSearch />
   )
 }
 

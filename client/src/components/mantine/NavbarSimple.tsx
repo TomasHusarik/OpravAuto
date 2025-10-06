@@ -54,7 +54,6 @@ export function NavbarSimple() {
     navigate('/login');
   }
 
-  console.log('Current user in NavbarSimple:', user);
   return (
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>

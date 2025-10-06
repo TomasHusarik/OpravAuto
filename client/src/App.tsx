@@ -38,7 +38,7 @@ const App = () => {
           <NavbarSimple />
         </AppShell.Navbar>
 
-        <AppShell.Main>
+        <AppShell.Main mx={"xl"} pt={"xl"}>
           <Routes>
             <Route path="/" element={!loggedUser ? <Navigate to="/login" replace /> : <Navigate to="/orders" replace />} />
             <Route path="/login" element={<Login />} />

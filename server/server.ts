@@ -4,7 +4,8 @@ import { connectDB } from '@db/connection';
 import cors from 'cors';
 
 import vehicleRoutes from '@routes/vehicles.routes';
-import technicianRoutes from '@routes/technicians.routes';
+import authRoutes from '@routes/auth.routes';
+import customerRoutes from '@routes/customers.routes';
 
 
 const PORT = env.PORT;
@@ -30,7 +31,8 @@ app.use(express.text());
 
 // Routes
 app.use('/api/vehicles', vehicleRoutes);
-app.use('/api/technicians', technicianRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/customers', customerRoutes);
 
 
 app.listen(PORT, () => {
