@@ -1,13 +1,17 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { NavbarSimple } from './components/mantine/NavbarSimple';
 import '@mantine/core/styles.css';
-import Login from '@pages/login';
-import Orders from '@pages/orders';
 import { AppShell, Burger } from "@mantine/core";
 import { useDisclosure } from '@mantine/hooks';
+import { Technician } from "@/types/Technician";
+import Login from "@pages/Login";
+import Orders from "@pages/Orders";
+import Customers from "@pages/Customers";
 
 const App = () => {
   const [opened, { toggle }] = useDisclosure();
+    const loggedUser: Technician = JSON.parse(localStorage.getItem('technician') || '{}');
+  
 
   return (
     <BrowserRouter>
@@ -36,9 +40,10 @@ const App = () => {
 
         <AppShell.Main>
           <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/" element={!loggedUser ? <Navigate to="/login" replace /> : <Navigate to="/orders" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/customers" element={<Customers />} />
           </Routes>
         </AppShell.Main>
       </AppShell>

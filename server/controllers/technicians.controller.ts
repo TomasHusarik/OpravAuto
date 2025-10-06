@@ -43,10 +43,13 @@ export const login = async (req: Request, res: Response) => {
             return res.status(401).json({ error: ErrorMessages.invalidCredentials });
         }
 
+        // Generate token
+        const token = createToken(technician._id);
+
         // Remove password from response
         const { password: _, ...technicianData } = technician.toObject();
 
-        return res.status(200).json({ technician: technicianData });
+        return res.status(200).json({ technician: technicianData, token });
     } catch (error) {
         return res.status(500).json({ error: ErrorMessages.internalServerError });
     }

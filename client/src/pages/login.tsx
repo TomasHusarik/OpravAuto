@@ -1,13 +1,22 @@
-import { authenticateUser } from '@/utils/api';
+import { loginUser } from '@/utils/api';
+import { useAuthContext } from '@/utils/authTypes';
 import { Button, Center, Divider, Group, Paper, PasswordInput, Stack, Text, TextInput } from '@mantine/core';
 import type { PaperProps } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = (props: PaperProps) => {
+  const navigate = useNavigate();
+  const { dispatch } = useAuthContext();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const form = useForm({
     initialValues: {
-      email: '',
-      password: '',
+      email: 'jan.marek@opravy.cz',
+      password: 'securePassword123!',
     },
     validate: {
       email: (val: string) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
@@ -15,11 +24,20 @@ const Login = (props: PaperProps) => {
     },
   });
 
-  const handleSubmit = (values: typeof form.values) => {
+  const handleLogin = async (values: typeof form.values) => {
+    setIsLoading(true);
+    setError(null);
+
     try {
-      authenticateUser(values.email, values.password)
+      const response = await loginUser(values.email, values.password);
+
+      localStorage.setItem('technician', JSON.stringify(response.technician));
+      dispatch({ type: 'LOGIN', payload: response });
+      navigate('/orders');
     } catch (error) {
-      console.error('Login failed:', error);
+      setError(error instanceof Error ? error.message : 'An unexpected error occurred');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -32,7 +50,7 @@ const Login = (props: PaperProps) => {
 
         <Divider my="lg" />
 
-        <form onSubmit={form.onSubmit(handleSubmit)}>
+        <form onSubmit={form.onSubmit(handleLogin)}>
           <Stack>
             <TextInput
               required
@@ -57,9 +75,13 @@ const Login = (props: PaperProps) => {
           <Divider my="lg" />
 
           <Group justify="flex-end">
-            <Button type="submit" radius="xl">
+            <Button type="submit" radius="xl" loading={isLoading}>
               Login
             </Button>
+            {error && (<Text color="red" size="sm">
+              {error}
+            </Text>
+            )}
           </Group>
         </form>
       </Paper>
