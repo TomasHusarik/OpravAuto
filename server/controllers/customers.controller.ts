@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import Customer from '@models/Customer';
 
 export const addCusotmer = async (req: Request, res: Response) => {
-    const { firstName, lastName, email, phoneNumber, address } = req.body;
+    const { firstName, lastName, email, phoneNumber, address, note } = req.body;
 
     try {
         const newCustomer = new Customer({
@@ -11,7 +11,9 @@ export const addCusotmer = async (req: Request, res: Response) => {
             email,
             phoneNumber,
             address,
+            note,
         });
+        
         await newCustomer.save();
         res.status(201).json(newCustomer);
     } catch (error) {
