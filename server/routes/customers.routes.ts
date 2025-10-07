@@ -1,6 +1,6 @@
 import express from 'express';
 import requireAuth from '@middleware/requireAuth';
-import { addCusotmer, getCustomers, updateCustomer, deleteCustomer } from '@controllers/customers.controller';
+import { addCustomer, getCustomers, updateCustomer, deleteCustomer } from '@controllers/customers.controller';
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ const router = express.Router();
 router.use(requireAuth);
 
 // POST /customers/add-customer - Add new customer
-router.post('/add-customer', addCusotmer);
+router.post('/add-customer', addCustomer);
 
 // GET /customers/get-customers/ - Get all customers
 router.get('/get-customers', getCustomers);
