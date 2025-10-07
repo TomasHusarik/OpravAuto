@@ -7,11 +7,12 @@ import '@mantine/core/styles.css';
 import Login from "@/pages/Login";
 import Orders from "@/pages/Orders";
 import Customers from "@/pages/Customers";
+import { useAuthContext } from "./utils/authTypes";
 
 
 const App = () => {
   const [opened, { toggle }] = useDisclosure();
-    const loggedUser: Technician = JSON.parse(localStorage.getItem('technician') || '{}');
+    const { user } = useAuthContext();
   
 
   return (
@@ -41,7 +42,7 @@ const App = () => {
 
         <AppShell.Main mx={"xl"} pt={"xl"}>
           <Routes>
-            <Route path="/" element={!loggedUser ? <Navigate to="/login" replace /> : <Navigate to="/orders" replace />} />
+            <Route path="/" element={!user ? <Navigate to="/login" replace /> : <Navigate to="/orders" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/customers" element={<Customers />} />
