@@ -15,8 +15,8 @@ const Login = (props: PaperProps) => {
 
   const form = useForm({
     initialValues: {
-      email: 'jan.marek@opravy.cz',
-      password: 'securePassword123!',
+      email: 'admin@oprav-auto.com',
+      password: 'adminadmin1!',
     },
     validate: {
       email: (val: string) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
