@@ -1,26 +1,38 @@
 import { useEffect, useState } from 'react'
-import { ActionIcon, Drawer, Grid, TextInput, Title, Tooltip } from '@mantine/core'
+import { ActionIcon, Grid, TextInput, Title, Tooltip } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
 import { IconUserPlus } from '@tabler/icons-react'
 import CustomersTable from '@/components/customers/CustomersTable'
 import { getCustomers } from '@/utils/api'
 import { Customer } from '@/types/Customer'
 import { removeDiacritics } from '@/utils/helpers'
+import CustomerDrawer from '@/components/customers/CustomerDrawer'
+
+    const emptyCustomer: Customer = {
+        _id: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: '',
+        address: '',
+    };
 
 const CustomerSearch = () => {
-    const [userDrawer, setUserDrawer] = useState<boolean>(false);
-    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [formData, setFormData] = useState<Customer[]>([]);
     const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
+    const [selectedCustomer, setSelectedCustomer] = useState<Customer>(emptyCustomer);
+
     const [searchValue, setSearchValue] = useState<string>('');
     const [debouncedSearchValue] = useDebouncedValue(searchValue, 150);
 
-    const maxUsers: number = 10
+    const [userDrawer, setUserDrawer] = useState<boolean>(false);
 
+    const maxUsers: number = 8;
 
     const loadData = async () => {
         try {
             const loadedCustomers = await getCustomers();
-            setCustomers(loadedCustomers);
+            setFormData(loadedCustomers);
             setFilteredCustomers(loadedCustomers
                 .sort((a: Customer, b: Customer) => a.lastName.localeCompare(b.lastName))
                 .slice(0, maxUsers));
@@ -35,11 +47,11 @@ const CustomerSearch = () => {
         const searchTerm = removeDiacritics(debouncedSearchValue);
 
         if (searchTerm.length < 3) {
-            setFilteredCustomers(customers
+            setFilteredCustomers(formData
                 .sort((a: Customer, b: Customer) => a.lastName.localeCompare(b.lastName))
                 .slice(0, maxUsers));
         } else {
-            const filtered = customers.filter(customer => (
+            const filtered = formData.filter(customer => (
                 removeDiacritics(customer.firstName).includes(searchTerm) ||
                 removeDiacritics(customer.lastName).includes(searchTerm)
             ))
@@ -48,17 +60,19 @@ const CustomerSearch = () => {
 
             setFilteredCustomers(filtered);
         }
-    }, [debouncedSearchValue, customers]);
+    }, [debouncedSearchValue, formData]);
 
     useEffect(() => {
         loadData();
     }, []);
 
+    console.log(selectedCustomer)
+
     return (
         <>
             <Grid>
                 <Grid.Col span={12}>
-                    <Title order={1} mb="md">Search Customers</Title>
+                    <Title order={1} c="var(--mantine-color-blue-light-color)" mb="md">Search Customers</Title>
                 </Grid.Col>
                 <Grid.Col span={6}>
                     <TextInput
@@ -69,7 +83,7 @@ const CustomerSearch = () => {
                         onChange={(e) => setSearchValue(e.target.value)}
                         rightSection={
                             <Tooltip label="Add new customer">
-                                <ActionIcon size={32} radius="xl" variant="subtle" onClick={() => setUserDrawer(true)} >
+                                <ActionIcon size={32} radius="xl" variant="subtle" onClick={() => {setSelectedCustomer(emptyCustomer); setUserDrawer(true);}} >
                                     <IconUserPlus stroke={1.5} />
                                 </ActionIcon>
                             </Tooltip>
@@ -79,13 +93,17 @@ const CustomerSearch = () => {
                 <Grid.Col span={6} />
                 <Grid.Col span={12} />
                 <Grid.Col span={12}>
-                    <CustomersTable filteredCustomers={filteredCustomers} setUserDrawer={setUserDrawer} />
+                    <CustomersTable filteredCustomers={filteredCustomers} setUserDrawer={setUserDrawer} setSelectedCustomer={setSelectedCustomer} loadData={loadData}/>
                 </Grid.Col>
             </Grid>
-
-            <Drawer opened={userDrawer} onClose={() => setUserDrawer(false)} title="Add New Customer" position='right' size={'lg'}>
-                {/* Drawer content */}
-            </Drawer>
+            
+            <CustomerDrawer 
+                customer={selectedCustomer} 
+                setCustomer={setSelectedCustomer} 
+                userDrawer={userDrawer} 
+                setUserDrawer={setUserDrawer}
+                onSaveSuccess={loadData}
+            />
         </>
     )
 }

@@ -1,12 +1,13 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { NavbarSimple } from './components/mantine/NavbarSimple';
-import '@mantine/core/styles.css';
 import { AppShell, Burger } from "@mantine/core";
 import { useDisclosure } from '@mantine/hooks';
 import { Technician } from "@/types/Technician";
+import '@mantine/core/styles.css';
 import Login from "@/pages/Login";
 import Orders from "@/pages/Orders";
 import Customers from "@/pages/Customers";
+
 
 const App = () => {
   const [opened, { toggle }] = useDisclosure();

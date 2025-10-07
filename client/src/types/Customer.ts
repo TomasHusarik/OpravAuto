@@ -6,6 +6,7 @@ export interface Customer {
   phoneNumber: string;
   address: string;
   vehicles?: string[];
+  note?: string;
   createdAt?: string;
   updatedAt?: string;
 }

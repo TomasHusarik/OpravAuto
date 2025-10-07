@@ -62,7 +62,7 @@ export function NavbarSimple() {
           <Text
             fw={700}
             size="lg"
-            c="blue.6"
+            c="var(--mantine-color-blue-light-color)"
             style={{
               fontFamily: 'system-ui, -apple-system, sans-serif',
               letterSpacing: '0.5px',

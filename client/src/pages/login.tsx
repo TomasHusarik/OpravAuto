@@ -43,7 +43,7 @@ const Login = (props: PaperProps) => {
 
   return (
     <Center style={{ minHeight: '100vh' }}>
-      <Paper radius="md" p="lg" withBorder {...props} style={{ width: 800, height: 'auto', margin: 20 }}>
+      <Paper radius="md" p="lg" withBorder {...props} style={{ width: 600, height: 'auto', margin: 20 }}>
         <Text size="lg" fw={500}>
           Welcome to OpravAuto
         </Text>

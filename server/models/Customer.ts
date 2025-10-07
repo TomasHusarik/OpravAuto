@@ -23,11 +23,22 @@ const customerSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    vehicles: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Vehicle,"
-    }],
+    note: {
+        type: String,
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
+}, { timestamps: true
 });
+
+// // Virtual to get customer's vehicles
+// customerSchema.virtual('vehicles', {
+//     ref: 'Vehicle',
+//     localField: '_id',
+//     foreignField: 'customerId'
+// });
 
 const Customer = mongoose.model("Customer", customerSchema);
 export default Customer;
