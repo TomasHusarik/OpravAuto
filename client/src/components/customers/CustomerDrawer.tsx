@@ -60,7 +60,7 @@ const CustomerDrawer = (props: ICustomerDrawer) => {
 
                 <Grid px={20}>
                     <Grid.Col span={12}>
-                        <Title order={1} c="var(--mantine-color-blue-light-color)"> {customer ? `Edit Customer` : 'Create New Customer'}</Title>
+                        <Title order={1} c="var(--mantine-color-blue-light-color)"> {customer?._id ? `Edit Customer` : 'Create New Customer'}</Title>
                     </Grid.Col>
                     <Grid.Col span={12} />
                     <Grid.Col span={6}>
