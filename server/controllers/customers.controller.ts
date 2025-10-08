@@ -22,6 +22,19 @@ export const getCustomers = async (req: Request, res: Response) => {
     }
 };
 
+// GET /customers/get-customer/:_id - Get customer by ID
+export const getCustomer = async (req: Request, res: Response) => {
+
+    try {
+        const customer = await Customer.findById(req.params._id);
+        if (!customer) {
+            return res.status(404).json({ message: 'Customer not found' });
+        }
+        res.status(200).json(customer);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
 // PUT /customers/update-customer - Update customer
 export const updateCustomer = async (req: Request, res: Response) => {
     const { _id, ...updatedData } = req.body;

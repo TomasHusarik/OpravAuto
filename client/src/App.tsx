@@ -6,8 +6,9 @@ import '@mantine/core/styles.css';
 import Login from "@/pages/Login";
 import Orders from "@/pages/Orders";
 import Customers from "@/pages/Customers";
-import { useAuthContext } from "./utils/authTypes";
-import NothingFound from "./pages/NothingFound";
+import { useAuthContext } from "@/utils/authTypes";
+import NothingFound from "@/pages/NothingFound";
+import Customer from "@/pages/Customer";
 
 
 const App = () => {
@@ -46,6 +47,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/orders" element={user ? <Orders /> : <Navigate to="/login" replace />}/>
             <Route path="/customers" element={user ? <Customers /> : <Navigate to="/login" replace />}/>
+            <Route path="/customer" element={<Customer />}/>
             <Route path="*" element={<NothingFound />} />
           </Routes>
         </AppShell.Main>

@@ -17,6 +17,8 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+//#region Customer APIs 
+
 export const deleteCustomer = async (customerId: string) => {
     try {
         const response = await api.delete(`/customers/delete-customer/${customerId}`);
@@ -56,6 +58,18 @@ export const getCustomers = async () => {
         throw error;
     }
 }
+
+export const getCustomer = async (customerId: string) => {
+    try {
+        const response = await api.get(`/customers/get-customer/${customerId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching customer:', error);
+        throw error;
+    }
+}
+
+//#region Auth APIs
 export const loginUser = async (email: string, password: string) => {
     try {
         const response = await api.post('/auth/login', {
