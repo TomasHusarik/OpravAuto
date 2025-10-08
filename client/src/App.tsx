@@ -2,12 +2,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { NavbarSimple } from './components/mantine/NavbarSimple';
 import { AppShell, Burger } from "@mantine/core";
 import { useDisclosure } from '@mantine/hooks';
-import { Technician } from "@/types/Technician";
 import '@mantine/core/styles.css';
 import Login from "@/pages/Login";
 import Orders from "@/pages/Orders";
 import Customers from "@/pages/Customers";
 import { useAuthContext } from "./utils/authTypes";
+import NothingFound from "./pages/NothingFound";
 
 
 const App = () => {
@@ -44,8 +44,9 @@ const App = () => {
           <Routes>
             <Route path="/" element={!user ? <Navigate to="/login" replace /> : <Navigate to="/orders" replace />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/customers" element={<Customers />} />
+            <Route path="/orders" element={user ? <Orders /> : <Navigate to="/login" replace />}/>
+            <Route path="/customers" element={user ? <Customers /> : <Navigate to="/login" replace />}/>
+            <Route path="*" element={<NothingFound />} />
           </Routes>
         </AppShell.Main>
       </AppShell>
