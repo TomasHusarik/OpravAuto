@@ -1,6 +1,6 @@
 import { Customer } from '@/types/Customer';
 import { addCustomer, updateCustomer } from '@/utils/api';
-import { ActionIcon, Button, Drawer, Grid, TextInput, Title } from '@mantine/core'
+import { Button, Drawer, Grid, TextInput, Title } from '@mantine/core'
 import { IconAt, IconUser, IconPhone, IconMapPin, IconDeviceFloppy } from '@tabler/icons-react';
 import em from "@/utils/errorMessages";
 import { useState } from 'react';
@@ -53,7 +53,7 @@ const CustomerDrawer = (props: ICustomerDrawer) => {
         <>
             <Drawer
                 opened={userDrawer}
-                onClose={() => {setUserDrawer(false); setError(false);}}
+                onClose={() => { setUserDrawer(false); setError(false); }}
                 position='right'
                 size={"lg"}
             >
@@ -151,9 +151,7 @@ const CustomerDrawer = (props: ICustomerDrawer) => {
                             radius="md"
                             onClick={handleSave}
                             leftSection={
-                                <ActionIcon size={20} radius="md" c="white" variant="subtle">
-                                    <IconDeviceFloppy stroke={1.5} />
-                                </ActionIcon>
+                                <IconDeviceFloppy stroke={1.5} size={20} color="white" />
                             }
                         >
                             Save

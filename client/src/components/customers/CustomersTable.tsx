@@ -38,14 +38,14 @@ const CustomersTable = (props: ICustomersTable) => {
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                    {filteredCustomers?.map((c) => (
+                    {filteredCustomers.map((c) => (
                         <Table.Tr key={c._id} style={{ cursor: 'pointer' }} onClick={() => handleCustomerClick(c)}>
                             <Table.Td>{c.firstName} {c.lastName}</Table.Td>
                             <Table.Td>{c.email}</Table.Td>
                             <Table.Td>{c.phoneNumber}</Table.Td>
                             <Table.Td>{c.address}</Table.Td>
                             <Table.Td>
-                                <ActionIcon size={32} radius="xl" variant="subtle"  onClick={(e) => {e.stopPropagation(); handleDelete(c._id);} }>
+                                <ActionIcon size={32} radius="xl" variant="subtle"  onClick={(e) => {e.stopPropagation(); handleDelete(c._id!);} }>
                                     <IconTrash stroke={1.5}  />
                                 </ActionIcon>
                             </Table.Td>
