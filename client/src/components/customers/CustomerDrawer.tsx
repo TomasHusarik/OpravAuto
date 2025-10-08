@@ -3,161 +3,181 @@ import { addCustomer, updateCustomer } from '@/utils/api';
 import { Button, Drawer, Grid, TextInput, Title } from '@mantine/core'
 import { IconAt, IconUser, IconPhone, IconMapPin, IconDeviceFloppy } from '@tabler/icons-react';
 import em from "@/utils/errorMessages";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm } from '@mantine/form';
 
 interface ICustomerDrawer {
     userDrawer: boolean;
-    customer?: Customer | null;
+    customer?: Customer;
     setCustomer: (customer: Customer) => void;
     setUserDrawer: (value: boolean) => void;
     onSaveSuccess?: () => void;
 }
 
 const CustomerDrawer = (props: ICustomerDrawer) => {
-    const { customer, userDrawer, setUserDrawer, setCustomer, onSaveSuccess } = props;
-    const [error, setError] = useState<boolean>(false);
+    const { customer, userDrawer, setUserDrawer, onSaveSuccess } = props;
+    const [isSaving, setIsSaving] = useState(false);
 
-    const handleSave = async () => {
+    const form = useForm({
+        initialValues: {
+            _id: customer?._id,
+            firstName: customer?.firstName || '',
+            lastName: customer?.lastName || '',
+            email: customer?.email || '',
+            phoneNumber: customer?.phoneNumber || '',
+            address: customer?.address || '',
+            note: customer?.note || '',
+        },
+        validate: {
+            firstName: (val: string) => (val?.trim() ? null : em.mandatoryField),
+            lastName: (val: string) => (val?.trim() ? null : em.mandatoryField),
+            email: (val: string) => !val?.trim() ? em.mandatoryField : (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
+            phoneNumber: (val: string) => (val?.trim() ? null : em.mandatoryField),
+            address: (val: string) => (val?.trim() ? null : em.mandatoryField),
+        },
+    }); +
 
-        if (!customer || !customer.firstName?.trim() || !customer.lastName?.trim() ||
-            !customer.email?.trim() || !customer.phoneNumber?.trim() ||
-            !customer.address?.trim()) {
-            setError(true);
-            return;
-        }
+        useEffect(() => {
+            form.setValues({
+                _id: customer?._id,
+                firstName: customer?.firstName,
+                lastName: customer?.lastName,
+                email: customer?.email,
+                phoneNumber: customer?.phoneNumber,
+                address: customer?.address,
+                note: customer?.note,
+            });
+        }, [customer]);
 
+    const handleSave = async (values: typeof form.values) => {
+        setIsSaving(true);
         try {
-            if (customer._id) {
-                await updateCustomer(customer);
+            if (values._id) {
+                await updateCustomer(values);
             } else {
-                await addCustomer(customer);
+                await addCustomer(values);
             }
-            setError(false);
             setUserDrawer(false);
             onSaveSuccess?.();
         } catch (error) {
             console.error('Error saving customer:', error);
+        } finally {
+            setIsSaving(false);
         }
-    }
-
-    const handleChange = (name: string, value: string) => {
-        if (customer) {
-            setCustomer({
-                ...customer,
-                [name]: value
-            });
-        }
-    }
+    };
 
     return (
         <>
             <Drawer
                 opened={userDrawer}
-                onClose={() => { setUserDrawer(false); setError(false); }}
+                onClose={() => { setUserDrawer(false); }}
                 position='right'
                 size={"lg"}
             >
 
-                <Grid px={20}>
-                    <Grid.Col span={12}>
-                        <Title order={1} c="var(--mantine-color-blue-light-color)"> {customer?._id ? `Edit Customer` : 'Create New Customer'}</Title>
-                    </Grid.Col>
-                    <Grid.Col span={12} />
-                    <Grid.Col span={6}>
-                        <TextInput
-                            label="First Name"
-                            placeholder="First Name"
-                            leftSection={<IconUser size={16} />}
-                            radius="md"
-                            size="md"
-                            name="firstName"
-                            required
-                            value={customer?.firstName || ''}
-                            onChange={(e) => handleChange(e.currentTarget.name, e.currentTarget.value)}
-                            error={error && !customer?.firstName?.trim() ? em.mandatoryField : undefined}
-                        />
-                    </Grid.Col>
-                    <Grid.Col span={6}>
-                        <TextInput
-                            label="Last Name"
-                            placeholder="Last Name"
-                            leftSection={<IconUser size={16} />}
-                            radius="md"
-                            size="md"
-                            name="lastName"
-                            required
-                            value={customer?.lastName || ''}
-                            onChange={(e) => handleChange(e.currentTarget.name, e.currentTarget.value)}
-                            error={error && !customer?.lastName?.trim() ? em.mandatoryField : undefined}
-                        />
-                    </Grid.Col>
-                    <Grid.Col span={6}>
-                        <TextInput
-                            label="Email"
-                            placeholder="Email"
-                            leftSection={<IconAt size={16} />}
-                            radius="md"
-                            size="md"
-                            name="email"
-                            required
-                            value={customer?.email || ''}
-                            onChange={(e) => handleChange(e.currentTarget.name, e.currentTarget.value)}
-                            error={error && !customer?.email?.trim() ? em.mandatoryField : undefined}
-                        />
-                    </Grid.Col>
-                    <Grid.Col span={6}>
-                        <TextInput
-                            label="Phone Number"
-                            placeholder="Phone Number"
-                            leftSection={<IconPhone size={16} />}
-                            radius="md"
-                            size="md"
-                            name="phoneNumber"
-                            required
-                            value={customer?.phoneNumber || ''}
-                            onChange={(e) => handleChange(e.currentTarget.name, e.currentTarget.value)}
-                            error={error && !customer?.phoneNumber?.trim() ? em.mandatoryField : undefined}
-                        />
-                    </Grid.Col>
-                    <Grid.Col span={12}>
-                        <TextInput
-                            label="Address"
-                            placeholder="Address"
-                            leftSection={<IconMapPin size={16} />}
-                            radius="md"
-                            size="md"
-                            name="address"
-                            required
-                            value={customer?.address || ''}
-                            onChange={(e) => handleChange(e.currentTarget.name, e.currentTarget.value)}
-                            error={error && !customer?.address?.trim() ? em.mandatoryField : undefined}
-                        />
-                    </Grid.Col>
-                    <Grid.Col span={12}>
-                        <TextInput
-                            label="Note"
-                            placeholder="Note"
-                            radius="md"
-                            size="md"
-                            name="note"
-                            value={customer?.note || ''}
-                            onChange={(e) => handleChange(e.currentTarget.name, e.currentTarget.value)}
-                        />
-                    </Grid.Col>
-                    <Grid.Col span={12} />
-                    <Grid.Col span={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button
-                            variant="filled"
-                            radius="md"
-                            onClick={handleSave}
-                            leftSection={
-                                <IconDeviceFloppy stroke={1.5} size={20} color="white" />
-                            }
-                        >
-                            Save
-                        </Button>
-                    </Grid.Col>
-                </Grid>
+                <form onSubmit={form.onSubmit((values) => handleSave(values))}>
+                    <Grid px={20}>
+                        <Grid.Col span={12}>
+                            <Title order={1} c="var(--mantine-color-blue-light-color)"> {customer?._id ? `Edit Customer` : 'Create New Customer'}</Title>
+                        </Grid.Col>
+                        <Grid.Col span={12} />
+                        <Grid.Col span={6}>
+                            <TextInput
+                                label="First Name"
+                                placeholder="First Name"
+                                leftSection={<IconUser size={16} />}
+                                radius="md"
+                                size="md"
+                                name="firstName"
+                                required
+                                value={form.values.firstName}
+                                onChange={(e) => form.setFieldValue('firstName', e.currentTarget.value)}
+                                error={form.errors.firstName}
+                            />
+                        </Grid.Col>
+                        <Grid.Col span={6}>
+                            <TextInput
+                                label="Last Name"
+                                placeholder="Last Name"
+                                leftSection={<IconUser size={16} />}
+                                radius="md"
+                                size="md"
+                                name="lastName"
+                                required
+                                value={form.values.lastName}
+                                onChange={(e) => form.setFieldValue('lastName', e.currentTarget.value)}
+                                error={form.errors.lastName}
+                            />
+                        </Grid.Col>
+                        <Grid.Col span={6}>
+                            <TextInput
+                                label="Email"
+                                placeholder="Email"
+                                leftSection={<IconAt size={16} />}
+                                radius="md"
+                                size="md"
+                                name="email"
+                                required
+                                value={form.values.email}
+                                onChange={(e) => form.setFieldValue('email', e.currentTarget.value)}
+                                error={form.errors.email}
+                            />
+                        </Grid.Col>
+                        <Grid.Col span={6}>
+                            <TextInput
+                                label="Phone Number"
+                                placeholder="Phone Number"
+                                leftSection={<IconPhone size={16} />}
+                                radius="md"
+                                size="md"
+                                name="phoneNumber"
+                                required
+                                value={form.values.phoneNumber}
+                                onChange={(e) => form.setFieldValue('phoneNumber', e.currentTarget.value)}
+                                error={form.errors.phoneNumber}
+                            />
+                        </Grid.Col>
+                        <Grid.Col span={12}>
+                            <TextInput
+                                label="Address"
+                                placeholder="Address"
+                                leftSection={<IconMapPin size={16} />}
+                                radius="md"
+                                size="md"
+                                name="address"
+                                required
+                                value={form.values.address}
+                                onChange={(e) => form.setFieldValue('address', e.currentTarget.value)}
+                                error={form.errors.address}
+                            />
+                        </Grid.Col>
+                        <Grid.Col span={12}>
+                            <TextInput
+                                label="Note"
+                                placeholder="Note"
+                                radius="md"
+                                size="md"
+                                name="note"
+                                value={form.values.note}
+                                onChange={(e) => form.setFieldValue('note', e.currentTarget.value)}
+                            />
+                        </Grid.Col>
+                        <Grid.Col span={12} />
+                        <Grid.Col span={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <Button
+                                type="submit"
+                                variant="filled"
+                                radius="md"
+                                loading={isSaving}
+                                leftSection={
+                                    <IconDeviceFloppy stroke={1.5} size={20} color="white" />
+                                }
+                            >
+                                Save
+                            </Button>
+                        </Grid.Col>
+                    </Grid>
+                </form>
             </Drawer>
         </>
     )
