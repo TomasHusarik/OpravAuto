@@ -118,9 +118,6 @@ const CustomerOverview = (props: ICustomerOverview) => {
               Edit
             </Button>
           </Grid.Col>
-                      <Grid.Col span={12}>
-            <Title order={1} c="var(--mantine-color-blue-light-color)" mb="md">Vehicles</Title>
-          </Grid.Col>
         </Grid>
       }
 
