@@ -1,7 +1,8 @@
 import { Customer } from '@/types/Customer';
 import { deleteCustomer } from '@/utils/api';
 import { ActionIcon, Table } from '@mantine/core'
-import { IconTrash } from '@tabler/icons-react';
+import { IconTrash, IconUser } from '@tabler/icons-react';
+import { useNavigate } from 'react-router';
 
 interface ICustomersTable {
     filteredCustomers: Customer[];
@@ -12,6 +13,8 @@ interface ICustomersTable {
 
 const CustomersTable = (props: ICustomersTable) => {
     const { filteredCustomers, setUserDrawer, setSelectedCustomer, loadData } = props;
+
+    const navigate = useNavigate();
 
     const handleDelete = async (id: string) => {
         const confirmed = window.confirm('Are you sure you want to delete this customer?');
@@ -34,6 +37,7 @@ const CustomersTable = (props: ICustomersTable) => {
                         <Table.Th>Email</Table.Th>
                         <Table.Th>Phone</Table.Th>
                         <Table.Th>Adress</Table.Th>
+                        <Table.Th>Info</Table.Th>
                         <Table.Th>Delete</Table.Th>
                     </Table.Tr>
                 </Table.Thead>
@@ -45,8 +49,13 @@ const CustomersTable = (props: ICustomersTable) => {
                             <Table.Td>{c.phoneNumber}</Table.Td>
                             <Table.Td>{c.address}</Table.Td>
                             <Table.Td>
-                                <ActionIcon size={32} radius="xl" variant="subtle"  onClick={(e) => {e.stopPropagation(); handleDelete(c._id!);} }>
-                                    <IconTrash stroke={1.5}  />
+                                <ActionIcon size={32} radius="xl" variant="subtle" onClick={(e) => { e.stopPropagation(); navigate(`/customer?customerId=${c._id}`) }}>
+                                    <IconUser stroke={1.5} />
+                                </ActionIcon>
+                            </Table.Td>
+                            <Table.Td>
+                                <ActionIcon size={32} radius="xl" variant="subtle" onClick={(e) => { e.stopPropagation(); handleDelete(c._id!); }}>
+                                    <IconTrash stroke={1.5} />
                                 </ActionIcon>
                             </Table.Td>
                         </Table.Tr>
