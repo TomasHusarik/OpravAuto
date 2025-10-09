@@ -58,8 +58,10 @@ export function NavbarSimple() {
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
         <Group className={classes.header} justify="space-between">
-          <div onClick={() => navigate('/')}>
+          <div style={{ display: "flex", justifyContent: "space-between", cursor: 'pointer' }} onClick={() => navigate('/')}>
             <Image src="/opravAuto.png" alt="OpravAuto Logo" w={32} h={32} style={{ marginLeft: "10px" }} />
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", cursor: 'pointer' }} onClick={() => navigate('/')}>
             <Text
               fw={700}
               size="lg"
