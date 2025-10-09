@@ -1,6 +1,6 @@
 import { Customer } from '@/types/Customer';
 import { addCustomer, updateCustomer } from '@/utils/api';
-import { Button, Drawer, Grid, TextInput, Title } from '@mantine/core'
+import { Button, Drawer, Grid, Textarea, TextInput, Title } from '@mantine/core'
 import { IconAt, IconUser, IconPhone, IconMapPin, IconDeviceFloppy } from '@tabler/icons-react';
 import em from "@/utils/errorMessages";
 import { useEffect, useState } from 'react';
@@ -35,19 +35,19 @@ const CustomerDrawer = (props: ICustomerDrawer) => {
             phoneNumber: (val: string) => (val?.trim() ? null : em.mandatoryField),
             address: (val: string) => (val?.trim() ? null : em.mandatoryField),
         },
-    }); +
-
-        useEffect(() => {
-            form.setValues({
-                _id: customer?._id,
-                firstName: customer?.firstName,
-                lastName: customer?.lastName,
-                email: customer?.email,
-                phoneNumber: customer?.phoneNumber,
-                address: customer?.address,
-                note: customer?.note,
-            });
-        }, [customer]);
+    });
+    
+    useEffect(() => {
+        form.setValues({
+            _id: customer?._id,
+            firstName: customer?.firstName,
+            lastName: customer?.lastName,
+            email: customer?.email,
+            phoneNumber: customer?.phoneNumber,
+            address: customer?.address,
+            note: customer?.note,
+        });
+    }, [customer]);
 
     const handleSave = async (values: typeof form.values) => {
         setIsSaving(true);
@@ -152,7 +152,7 @@ const CustomerDrawer = (props: ICustomerDrawer) => {
                             />
                         </Grid.Col>
                         <Grid.Col span={12}>
-                            <TextInput
+                            <Textarea
                                 label="Note"
                                 placeholder="Note"
                                 radius="md"

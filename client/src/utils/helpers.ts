@@ -3,7 +3,7 @@ import { Customer } from "@/types/Customer";
 
 // Function to get full name of a user (Technician or Customer)
 export const getFullName = (user: Technician | Customer) => {
-    return `${user.lastName} ${user.firstName}`;
+    return `${user?.lastName} ${user?.firstName}`;
 };
 
 // Function to remove diacritics from a string and convert it to lowercase
@@ -17,9 +17,9 @@ export const removeDiacritics = (str: string): string => {
 
 export const getUrlParameterByName = (name: string, url?: string) => {
     if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, '\\$&');
-    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-    const results = regex.exec(url);
+    name = name.replace(/[[\]]/g, '\\$&');
+    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
