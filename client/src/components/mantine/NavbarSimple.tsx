@@ -58,19 +58,21 @@ export function NavbarSimple() {
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
         <Group className={classes.header} justify="space-between">
-          <Image src="/opravAuto.png" alt="OpravAuto Logo" w={32} h={32} style={{ marginLeft: "10px" }} />
-          <Text
-            fw={700}
-            size="lg"
-            c="var(--mantine-color-blue-light-color)"
-            style={{
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              letterSpacing: '0.5px',
-              marginLeft: '-60px',
-            }}
-          >
-            OpravAuto
-          </Text>
+          <div onClick={() => navigate('/')}>
+            <Image src="/opravAuto.png" alt="OpravAuto Logo" w={32} h={32} style={{ marginLeft: "10px" }} />
+            <Text
+              fw={700}
+              size="lg"
+              c="var(--mantine-color-blue-light-color)"
+              style={{
+                fontFamily: 'system-ui, -apple-system, sans-serif',
+                letterSpacing: '0.5px',
+                marginLeft: '-60px',
+              }}
+            >
+              OpravAuto
+            </Text>
+          </div>
           <ActionToggle />
           {/* <Code fw={700}>v1.0.0</Code> */}
         </Group>
