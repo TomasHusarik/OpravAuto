@@ -26,10 +26,10 @@ const CustomersTable = (props: ICustomersTable) => {
     }
 
     return (
-        <>
-            <Table striped highlightOnHover highlightOnHoverColor='var(--mantine-color-blue-light)'>
-                <Table.Thead>
-                    <Table.Tr c="var(--mantine-color-blue-light-color)" fs={'bold'} fz={'md'}>
+        <div className="table-container">
+            <Table className='table' striped highlightOnHover highlightOnHoverColor='var(--mantine-color-blue-light)'>
+                <Table.Thead >
+                    <Table.Tr c="var(--mantine-color-blue-light-color)" fs={'bold'}>
                         <Table.Th>Name</Table.Th>
                         <Table.Th>Email</Table.Th>
                         <Table.Th>Phone</Table.Th>
@@ -38,7 +38,7 @@ const CustomersTable = (props: ICustomersTable) => {
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                    {filteredCustomers.map((c) => (
+                    {filteredCustomers?.map((c) => (
                         <Table.Tr key={c._id} style={{ cursor: 'pointer' }} onClick={() => handleCustomerClick(c)}>
                             <Table.Td>{c.firstName} {c.lastName}</Table.Td>
                             <Table.Td>{c.email}</Table.Td>
@@ -53,7 +53,7 @@ const CustomersTable = (props: ICustomersTable) => {
                     ))}
                 </Table.Tbody>
             </Table>
-        </>
+        </div>
     )
 }
 
