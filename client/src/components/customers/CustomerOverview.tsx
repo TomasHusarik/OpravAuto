@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getCustomer } from '@/utils/api'
 import { Customer } from '@/types/Customer';
 import { Button, Grid, Textarea, TextInput, Title } from '@mantine/core';

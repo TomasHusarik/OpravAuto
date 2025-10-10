@@ -1,3 +1,5 @@
+import { Vehicle } from "@/types/Vehicle";
+
 export interface Customer {
   _id?: string;
   firstName?: string;
@@ -5,7 +7,7 @@ export interface Customer {
   email?: string;
   phoneNumber?: string;
   address?: string;
-  vehicles?: string[];
+  vehicles?: Vehicle[];
   note?: string;
   createdAt?: string;
   updatedAt?: string;

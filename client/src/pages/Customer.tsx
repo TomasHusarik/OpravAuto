@@ -1,6 +1,5 @@
 import CustomerOverview from '@/components/customers/CustomerOverview';
 import { getUrlParameterByName } from '@/utils/helpers'
-import React from 'react'
 
 export const Customer = () => {
 
