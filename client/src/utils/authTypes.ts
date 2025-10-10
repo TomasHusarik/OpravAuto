@@ -1,5 +1,6 @@
 import { Technician } from '@/types/Technician';
 import { createContext, useContext } from 'react';
+import { useNavigate } from 'react-router';
 
 // Define the login response interface
 export interface LoginResponse {
@@ -13,7 +14,7 @@ export interface AuthState {
 }
 
 // Define the auth actions
-export type AuthAction = 
+export type AuthAction =
   | { type: 'LOGIN'; payload: LoginResponse }
   | { type: 'LOGOUT' };
 
@@ -25,17 +26,17 @@ export interface AuthContextType extends AuthState {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
-    switch (action.type) {
-        case 'LOGIN':
-            return { user: action.payload };
-        case 'LOGOUT':
-            return { user: null };
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case 'LOGIN':
+      return { user: action.payload };
+    case 'LOGOUT':
+      return { user: null };
+    default:
+      return state;
+  }
 };
 
-// Custom hook to use the AuthContext
+//#region  Custom hooks
 export const useAuthContext = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -43,3 +44,16 @@ export const useAuthContext = () => {
   }
   return context;
 };
+
+export const useLogout = () => {
+  const { dispatch } = useAuthContext();
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem('user');
+    dispatch({ type: 'LOGOUT' });
+    navigate('/login');
+  }
+  
+  return logout;
+}

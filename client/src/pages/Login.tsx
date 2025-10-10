@@ -78,11 +78,11 @@ const Login = (props: PaperProps) => {
             <Button type="submit" radius="xl" loading={isLoading}>
               Login
             </Button>
-            {error && (<Text color="red" size="sm">
-              {error}
-            </Text>
-            )}
           </Group>
+          {error && (<Text color="red" size="sm">
+            {error}
+          </Text>
+          )}
         </form>
       </Paper>
     </Center>

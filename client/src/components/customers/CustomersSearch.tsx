@@ -18,15 +18,12 @@ const CustomerSearch = () => {
 
     const [userDrawer, setUserDrawer] = useState<boolean>(false);
 
-    const maxUsers: number = 8;
-
     const loadData = async () => {
         try {
             const loadedCustomers: Customer[] = await getCustomers();
             setFormData(loadedCustomers);
             setFilteredCustomers(loadedCustomers
-                .sort((a: Customer, b: Customer) => a.lastName!.localeCompare(b.lastName!))
-                .slice(0, maxUsers));
+                .sort((a: Customer, b: Customer) => a.lastName!.localeCompare(b.lastName!)));
         } catch (error) {
             console.error('Failed to load customers:', error)
         }
@@ -39,15 +36,13 @@ const CustomerSearch = () => {
 
         if (searchTerm.length < 3) {
             setFilteredCustomers(formData
-                .sort((a: Customer, b: Customer) => a.lastName!.localeCompare(b.lastName!))
-                .slice(0, maxUsers));
+                .sort((a: Customer, b: Customer) => a.lastName!.localeCompare(b.lastName!)));
         } else {
             const filtered = formData.filter(customer => (
                 removeDiacritics(customer.firstName!).includes(searchTerm) ||
                 removeDiacritics(customer.lastName!).includes(searchTerm)
             ))
-                .sort((a, b) => a.firstName!.localeCompare(b.firstName!))
-                .slice(0, maxUsers);
+                .sort((a, b) => a.firstName!.localeCompare(b.firstName!));
 
             setFilteredCustomers(filtered);
         }

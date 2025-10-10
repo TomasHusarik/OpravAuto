@@ -13,9 +13,9 @@ import Customer from "@/pages/Customer";
 
 const App = () => {
   const [opened, { toggle }] = useDisclosure();
-    const { user } = useAuthContext();
-    const isMobile = useMediaQuery('(max-width: 48em)');
-  
+  const { user } = useAuthContext();
+  const isMobile = useMediaQuery('(max-width: 48em)');
+
   return (
     <BrowserRouter>
       <AppShell
@@ -24,7 +24,7 @@ const App = () => {
           breakpoint: 'sm',
           collapsed: { mobile: !opened },
         }}
-        header={{ 
+        header={{
           height: { base: 60, sm: 0 }
         }}
       >
@@ -41,16 +41,18 @@ const App = () => {
           <NavbarSimple />
         </AppShell.Navbar>
 
-        <AppShell.Main mx={"xl"} pt={"xl"} style={{marginTop: isMobile ? 60 : 0}}>
-          <Routes>
-            <Route path="/" element={!user ? <Navigate to="/login" replace /> : <Navigate to="/orders" replace />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/orders" element={user ? <Orders /> : <Navigate to="/login" replace />}/>
-            <Route path="/customers" element={user ? <Customers /> : <Navigate to="/login" replace />}/>
-            <Route path="/customer" element={<Customer />}/>
-            <Route path="*" element={<NothingFound />} />
-          </Routes>
-        </AppShell.Main>
+        {user &&
+          <AppShell.Main mx={"xl"} pt={"xl"} style={{ marginTop: isMobile ? 60 : 0 }}>
+            <Routes>
+              <Route path="/" element={user ? <Navigate to="/orders" replace /> : <Navigate to="/login" replace />} />
+              <Route path="/login" element={user ? <Navigate to="/orders" replace /> : <Login />} />
+              <Route path="/orders" element={user ? <Orders /> : <Navigate to="/login" replace />} />
+              <Route path="/customers" element={user ? <Customers /> : <Navigate to="/login" replace />} />
+              <Route path="/customer" element={user ? <Customer /> : <Navigate to="/login" replace />} />
+              <Route path="*" element={<NothingFound />} />
+            </Routes>
+          </AppShell.Main>
+        }
       </AppShell>
     </BrowserRouter>
   )

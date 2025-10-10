@@ -9,7 +9,7 @@ import {
 import { Divider, Group, Image, Text } from '@mantine/core';
 import classes from './NavbarSimple.module.css';
 import { ActionToggle } from './ActionToggle';
-import { useAuthContext } from '@/utils/authTypes';
+import { useAuthContext, useLogout } from '@/utils/authTypes';
 import { getFullName } from '@/utils/helpers';
 
 const data = [
@@ -19,9 +19,10 @@ const data = [
 
 export function NavbarSimple() {
   const navigate = useNavigate();
+  const logout = useLogout();
   const location = useLocation();
   const [active, setActive] = useState('Orders');
-  const { user, dispatch } = useAuthContext();
+  const { user } = useAuthContext();
 
   // Update active based on current route
   useEffect(() => {
@@ -47,12 +48,6 @@ export function NavbarSimple() {
       <span>{item.label}</span>
     </a>
   ));
-
-  const handleLogOut = () => {
-    localStorage.removeItem('user');
-    dispatch({ type: 'LOGOUT' });
-    navigate('/login');
-  }
 
   return (
     <nav className={classes.navbar}>
@@ -89,7 +84,7 @@ export function NavbarSimple() {
           </a>
           <Divider my="sm" />
 
-          <a href="#" className={classes.link} onClick={(event) => { event.preventDefault(); handleLogOut(); }}>
+          <a href="#" className={classes.link} onClick={(event) => { event.preventDefault(); logout(); }}>
             <IconLogout className={classes.linkIcon} stroke={1.5} />
             <span>Logout</span>
           </a>
