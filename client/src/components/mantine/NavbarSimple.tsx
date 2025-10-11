@@ -17,7 +17,13 @@ const data = [
   { link: '/customers', label: 'Customers', icon: IconUsers }
 ];
 
-export function NavbarSimple() {
+interface INavbarSimple {
+  setOpened: (opened: boolean) => void;
+}
+
+export function NavbarSimple(props: INavbarSimple) {
+  const { setOpened } = props;
+
   const navigate = useNavigate();
   const logout = useLogout();
   const location = useLocation();
@@ -42,6 +48,7 @@ export function NavbarSimple() {
         event.preventDefault();
         setActive(item.label);
         navigate(item.link); // Use navigate instead of window.location.href
+        setOpened?.(false);
       }}
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />
@@ -53,10 +60,10 @@ export function NavbarSimple() {
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
         <Group className={classes.header} justify="space-between">
-          <div style={{ display: "flex", justifyContent: "space-between", cursor: 'pointer' }} onClick={() => navigate('/')}>
+          <div style={{ display: "flex", justifyContent: "space-between", cursor: 'pointer' }} onClick={() => {setOpened?.(false); navigate('/');}}>
             <Image src="/opravAuto.png" alt="OpravAuto Logo" w={32} h={32} style={{ marginLeft: "10px" }} />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", cursor: 'pointer' }} onClick={() => navigate('/')}>
+          <div style={{ display: "flex", justifyContent: "space-between", cursor: 'pointer' }} onClick={() => {setOpened?.(false); navigate('/');}}>
             <Text
               fw={700}
               size="lg"
@@ -84,7 +91,7 @@ export function NavbarSimple() {
           </a>
           <Divider my="sm" />
 
-          <a href="#" className={classes.link} onClick={(event) => { event.preventDefault(); logout(); }}>
+          <a href="#" className={classes.link} onClick={(event) => { event.preventDefault(); setOpened?.(false); logout(); }}>
             <IconLogout className={classes.linkIcon} stroke={1.5} />
             <span>Logout</span>
           </a>

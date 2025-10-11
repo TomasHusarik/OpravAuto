@@ -38,7 +38,7 @@ const App = () => {
         </AppShell.Header>
 
         <AppShell.Navbar>
-          <NavbarSimple />
+          <NavbarSimple setOpened={toggle}/>
         </AppShell.Navbar>
 
         <AppShell.Main mx={"xl"} pt={"xl"} style={{ marginTop: isMobile ? 60 : 0 }}>
@@ -51,7 +51,7 @@ const App = () => {
             <Route path="*" element={<NothingFound />} />
           </Routes>
         </AppShell.Main>
-        
+
       </AppShell>
     </BrowserRouter>
   )
