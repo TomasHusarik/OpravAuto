@@ -1,7 +1,8 @@
 import { Customer } from '@/types/Customer';
 import { deleteCustomer } from '@/utils/api';
-import { ActionIcon, Table } from '@mantine/core'
+import { ActionIcon, Pagination, Table } from '@mantine/core'
 import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 interface ICustomersTable {
@@ -11,8 +12,12 @@ interface ICustomersTable {
     loadData?: () => void;
 }
 
+const pageSize = 10;
+
 const CustomersTable = (props: ICustomersTable) => {
     const { filteredCustomers, setUserDrawer, setSelectedCustomer, loadData } = props;
+
+    const [page, setPage] = useState(1);
 
     const navigate = useNavigate();
 
@@ -28,6 +33,11 @@ const CustomersTable = (props: ICustomersTable) => {
         setUserDrawer(true);
     }
 
+    const totalPages = Math.ceil(filteredCustomers.length / pageSize);
+    const paginatedCustomers = filteredCustomers
+        .sort((a, b) => a.lastName!.localeCompare(b.lastName!))
+        .slice((page - 1) * pageSize, page * pageSize)
+
     return (
         <div className="table-container">
             <Table className='table' striped highlightOnHover highlightOnHoverColor='var(--mantine-color-blue-light)'>
@@ -42,14 +52,14 @@ const CustomersTable = (props: ICustomersTable) => {
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                    {filteredCustomers?.map((c) => (
-                        <Table.Tr key={c._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/customer?customerId=${c._id}`) }>
+                    {paginatedCustomers?.map((c) => (
+                        <Table.Tr key={c._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/customer?customerId=${c._id}`)}>
                             <Table.Td>{c.firstName} {c.lastName}</Table.Td>
                             <Table.Td>{c.email}</Table.Td>
                             <Table.Td>{c.phoneNumber}</Table.Td>
                             <Table.Td>{c.address}</Table.Td>
                             <Table.Td>
-                                <ActionIcon size={32} radius="xl" variant="subtle" onClick={(e) => {e.stopPropagation(); editCustomer(c);}}>
+                                <ActionIcon size={32} radius="xl" variant="subtle" onClick={(e) => { e.stopPropagation(); editCustomer(c); }}>
                                     <IconEdit stroke={1.5} />
                                 </ActionIcon>
                             </Table.Td>
@@ -62,6 +72,13 @@ const CustomersTable = (props: ICustomersTable) => {
                     ))}
                 </Table.Tbody>
             </Table>
+            <Pagination
+                value={page}
+                onChange={setPage}
+                total={totalPages}
+                mt="md"
+                style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}
+            />
         </div>
     )
 }

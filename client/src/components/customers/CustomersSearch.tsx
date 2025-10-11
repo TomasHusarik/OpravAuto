@@ -35,15 +35,12 @@ const CustomerSearch = () => {
         const searchTerm = removeDiacritics(debouncedSearchValue);
 
         if (searchTerm.length < 3) {
-            setFilteredCustomers(formData
-                .sort((a: Customer, b: Customer) => a.lastName!.localeCompare(b.lastName!)));
+            setFilteredCustomers(formData);
         } else {
             const filtered = formData.filter(customer => (
                 removeDiacritics(customer.firstName!).includes(searchTerm) ||
                 removeDiacritics(customer.lastName!).includes(searchTerm)
             ))
-                .sort((a, b) => a.firstName!.localeCompare(b.firstName!));
-
             setFilteredCustomers(filtered);
         }
     }, [debouncedSearchValue, formData]);
