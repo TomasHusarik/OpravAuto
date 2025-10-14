@@ -33,10 +33,11 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
             dispatch({ type: 'LOGOUT' });
           }
         }, 60 * 1000); // check every minute
-        setLoading(false);
         return () => clearInterval(interval);
+
       }
     }
+    setLoading(false);
   }, []);
 
   return (
