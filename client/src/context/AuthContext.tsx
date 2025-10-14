@@ -24,21 +24,23 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
       if (isTokenExpired(user.token)) {
         localStorage.removeItem('user');
         dispatch({ type: 'LOGOUT' });
-      } else {
-        dispatch({ type: 'LOGIN', payload: user });
-        // Optionally, set up periodic check
-        const interval = setInterval(() => {
-          if (isTokenExpired(user.token)) {
-            localStorage.removeItem('user');
-            dispatch({ type: 'LOGOUT' });
-          }
-        }, 60 * 1000); // check every minute
-        return () => clearInterval(interval);
-
+        } else {
+          dispatch({ type: 'LOGIN', payload: user });
+          // Optionally, set up periodic check
+          const interval = setInterval(() => {
+            if (isTokenExpired(user.token)) {
+              localStorage.removeItem('user');
+              dispatch({ type: 'LOGOUT' });
+            }
+          }, 60 * 1000); // check every minute
+          setLoading(false);
+          return () => clearInterval(interval);
+        }
+        setLoading(false);
+        return;
       }
-    }
-    setLoading(false);
-  }, []);
+      setLoading(false);
+    }, []);
 
   return (
     <AuthContext.Provider value={{ ...state, dispatch, loading }}>
