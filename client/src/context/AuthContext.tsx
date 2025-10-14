@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useState } from 'react';
 import { AuthContext, authReducer } from '@/utils/authTypes';
 // Helper to decode JWT and check expiration
 function isTokenExpired(token: string): boolean {
@@ -15,6 +15,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
   const [state, dispatch] = useReducer(authReducer, {
     user: null,
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -32,13 +33,14 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
             dispatch({ type: 'LOGOUT' });
           }
         }, 60 * 1000); // check every minute
+        setLoading(false);
         return () => clearInterval(interval);
       }
     }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, dispatch }}>
+    <AuthContext.Provider value={{ ...state, dispatch, loading }}>
       {children}
     </AuthContext.Provider>
   );
