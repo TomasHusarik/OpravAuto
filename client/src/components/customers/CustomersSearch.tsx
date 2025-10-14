@@ -49,8 +49,6 @@ const CustomerSearch = () => {
         loadData();
     }, []);
 
-    console.log(selectedCustomer)
-
     return (
         <>
             <Grid>

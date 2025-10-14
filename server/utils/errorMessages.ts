@@ -13,6 +13,7 @@ const ErrorMessages = {
     notFound: 'Resource not found',
     validationError: 'Validation error',
     mandatoryField: 'This field is mandatory',
+    serverError: 'A server error occurred. Please try again later.',
 };
 
 export default ErrorMessages;

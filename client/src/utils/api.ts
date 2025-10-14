@@ -17,6 +17,17 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+//#region Vehicle APIs
+export const getCustomerVehicles = async (ownerID: string) => {
+    try {
+        const response = await api.get(`/vehicles/get-vehicles/${ownerID}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching vehicles:', error);
+        throw error;
+    }
+}
+
 //#region Customer APIs 
 
 export const deleteCustomer = async (customerId: string) => {

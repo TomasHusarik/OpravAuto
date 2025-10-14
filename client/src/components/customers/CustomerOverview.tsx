@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getCustomer } from '@/utils/api'
 import { Customer } from '@/types/Customer';
-import { Button, Grid, Textarea, TextInput, Title } from '@mantine/core';
+import { Button, Grid, Table, Textarea, TextInput, Title } from '@mantine/core';
 import { IconArrowBackUp, IconAt, IconMapPin, IconPencil, IconPhone, IconUser } from '@tabler/icons-react';
 import { getFullName } from '@/utils/helpers';
 import { useNavigate } from 'react-router';
@@ -13,6 +13,7 @@ interface ICustomerOverview {
 
 const CustomerOverview = (props: ICustomerOverview) => {
   const { customerId } = props;
+
   const [customer, setCustomer] = useState<Customer>();
 
   const [userDrawer, setUserDrawer] = useState(false);
@@ -20,17 +21,24 @@ const CustomerOverview = (props: ICustomerOverview) => {
   const navigate = useNavigate();
 
   const loadData = async () => {
+    if (!customerId) return;
+
+    try {
     const usr = await getCustomer(customerId!);
     setCustomer(usr);
+    } catch (error) {
+      console.error('Failed to load customer:', error);
+    }
   }
+    
 
   useEffect(() => {
     loadData();
   }, [customerId]);
+  
 
   return (
     <>
-
       {customer &&
         <Grid>
           <Grid.Col span={12}>
@@ -119,7 +127,28 @@ const CustomerOverview = (props: ICustomerOverview) => {
             </Button>
           </Grid.Col>
           <Grid.Col span={12}>
-            <Title order={2} c="var(--mantine-color-blue-light-color)" mb="md">Vehicles</Title>
+                      <Table className='table' striped highlightOnHover highlightOnHoverColor='var(--mantine-color-blue-light)'>
+                <Table.Thead >
+                    <Table.Tr c="var(--mantine-color-blue-light-color)" fs={'bold'}>
+                        <Table.Th>Vehicle</Table.Th>
+                        <Table.Th>Year</Table.Th>
+                        <Table.Th>Mileage</Table.Th>
+                        <Table.Th>Engine</Table.Th>
+                        <Table.Th>Color</Table.Th>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                    {customer.vehicles?.map((v) => (
+                        <Table.Tr key={v._id} style={{ cursor: 'pointer' }}>
+                            <Table.Td>{v.make} {v.model}</Table.Td>
+                            <Table.Td>{v.year}</Table.Td>
+                            <Table.Td>{v.mileage?.toLocaleString() + " km"}</Table.Td>
+                            <Table.Td>{v.engineType}</Table.Td>
+                            <Table.Td>{v.color}</Table.Td>
+                        </Table.Tr>
+                    ))}
+                </Table.Tbody>
+            </Table>
           </Grid.Col>
         </Grid>
       }

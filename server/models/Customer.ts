@@ -30,15 +30,18 @@ const customerSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-}, { timestamps: true
+}, { 
+    timestamps: true,
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
-// // Virtual to get customer's vehicles
-// customerSchema.virtual('vehicles', {
-//     ref: 'Vehicle',
-//     localField: '_id',
-//     foreignField: 'customerId'
-// });
+// Virtual to get customer's vehicles
+customerSchema.virtual('vehicles', {
+    ref: 'Vehicle',
+    localField: '_id',
+    foreignField: 'owner'
+});
 
 const Customer = mongoose.model("Customer", customerSchema);
 export default Customer;
