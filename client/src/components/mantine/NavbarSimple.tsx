@@ -5,7 +5,6 @@ import {
   IconLogout,
   IconClipboardList,
   IconUser,
-  IconHome,
   IconLogin,
 } from '@tabler/icons-react';
 import { Divider, Group, Image, Text } from '@mantine/core';
