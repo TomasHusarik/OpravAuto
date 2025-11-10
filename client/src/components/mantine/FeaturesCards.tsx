@@ -8,7 +8,7 @@ import {
     useMantineTheme,
 } from '@mantine/core';
 import classes from './FeaturesCards.module.css';
-import LoginForm from '@/components/login/loginForm';
+import LoginForm from '@/components/login/LoginForm';
 
 const mockdata = [
     {
