@@ -15,7 +15,7 @@ const Login = (props: PaperProps) => {
 
   const form = useForm({
     initialValues: {
-      email: '',
+      email: 'info@opravauto.com',
       password: '',
     },
     validate: {
