@@ -5,6 +5,8 @@ import {
   IconLogout,
   IconClipboardList,
   IconUser,
+  IconHome,
+  IconLogin,
 } from '@tabler/icons-react';
 import { Divider, Group, Image, Text } from '@mantine/core';
 import classes from './NavbarSimple.module.css';
@@ -17,6 +19,10 @@ const data = [
   { link: '/customers', label: 'Customers', icon: IconUsers }
 ];
 
+const guestData = [
+  { link: '/login', label: 'Login', icon: IconLogin },
+];
+
 interface INavbarSimple {
   setOpened: (opened: boolean) => void;
 }
@@ -27,18 +33,23 @@ export function NavbarSimple(props: INavbarSimple) {
   const navigate = useNavigate();
   const logout = useLogout();
   const location = useLocation();
-  const [active, setActive] = useState('Orders');
+  const [active, setActive] = useState('');
   const { user } = useAuthContext();
 
   // Update active based on current route
   useEffect(() => {
-    const currentRoute = data.find(item => item.link === location.pathname);
+    const allItems = [...data, ...guestData];
+    const currentRoute = allItems.find(item => item.link === location.pathname);
     if (currentRoute) {
       setActive(currentRoute.label);
+    } else {
+      setActive('');
     }
   }, [location.pathname]);
 
-  const links = data.map((item) => (
+  const navItems = user ? data : guestData;
+
+  const links = navItems.map((item) => (
     <a
       className={classes.link}
       data-active={item.label === active || undefined}
@@ -47,8 +58,7 @@ export function NavbarSimple(props: INavbarSimple) {
       onClick={(event) => {
         event.preventDefault();
         setActive(item.label);
-        navigate(item.link); // Use navigate instead of window.location.href
-        setOpened?.(false);
+        navigate(item.link);
       }}
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />
@@ -80,7 +90,10 @@ export function NavbarSimple(props: INavbarSimple) {
           <ActionToggle />
           {/* <Code fw={700}>v1.0.0</Code> */}
         </Group>
-        {user && links}
+
+        <div>
+          {links}
+        </div>
       </div>
 
       {user &&
