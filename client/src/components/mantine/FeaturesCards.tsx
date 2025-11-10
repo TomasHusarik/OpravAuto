@@ -1,16 +1,14 @@
 import { IconGauge, IconTools, IconCar } from '@tabler/icons-react';
 import {
-    Badge,
     Card,
     Container,
-    Group,
     SimpleGrid,
     Text,
     Title,
     useMantineTheme,
 } from '@mantine/core';
 import classes from './FeaturesCards.module.css';
-import LoginForm from '../login/loginForm';
+import LoginForm from '@/components/login/loginForm';
 
 const mockdata = [
     {
