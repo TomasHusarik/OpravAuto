@@ -58,6 +58,7 @@ export function NavbarSimple(props: INavbarSimple) {
         event.preventDefault();
         setActive(item.label);
         navigate(item.link);
+        setOpened?.(false);
       }}
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />
