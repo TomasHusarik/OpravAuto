@@ -1,6 +1,8 @@
+import OrdersSearch from "@/components/orders/OrdersSearch"
+
 const Orders = () => {
   return (
-    <div>orders</div>
+    <OrdersSearch/>
   )
 }
 

@@ -17,6 +17,17 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+//#region Order APIs 
+export const getOrders = async () => {
+    try {
+        const response = await api.get('/orders/get-orders');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        throw error;
+    }
+}
+
 //#region Vehicle APIs
 export const getCustomerVehicles = async (ownerID: string) => {
     try {

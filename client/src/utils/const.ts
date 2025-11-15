@@ -12,3 +12,10 @@ export const transmissionTypes = {
     CVT: "CVT",
     Oth: "Other"
 }
+
+export const orderStatuses = {
+    Pending: "Pending",
+    InProgress: "In Progress",
+    Completed: "Completed",
+    Cancelled: "Cancelled"
+}

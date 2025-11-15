@@ -27,7 +27,6 @@ const CustomerSearch = () => {
         } catch (error) {
             console.error('Failed to load customers:', error)
         }
-
     }
 
     // Filter customers when debounced search value changes

@@ -1,16 +1,6 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-    customer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Customer",
-        required: true,
-    },
-    vehicle: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Vehicle",
-        required: true,
-    },
     status: {
         type: String,
         enum: ["Pending", "In Progress", "Completed", "Cancelled"],
@@ -24,13 +14,22 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    customer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Customer",
+        required: true,
+    },
+    vehicle: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Vehicle",
+        required: true,
+    },
     isDeleted: {
         type: Boolean,
         default: false,
     }
 }, {
-    timestamps: true, // This automatically handles createdAt and updatedAt
-   
+    timestamps: true,
 });
 
 const Order = mongoose.model("Order", orderSchema);

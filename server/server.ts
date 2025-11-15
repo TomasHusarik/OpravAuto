@@ -6,6 +6,7 @@ import cors from 'cors';
 import vehicleRoutes from '@routes/vehicles.routes';
 import authRoutes from '@routes/auth.routes';
 import customerRoutes from '@routes/customers.routes';
+import orderRoutes from '@routes/orders.routes';
 
 
 const PORT = env.PORT;
@@ -33,6 +34,8 @@ app.use(express.text());
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes);
+app.use('/api/orders', orderRoutes);
+
 
 
 app.listen(PORT, () => {
