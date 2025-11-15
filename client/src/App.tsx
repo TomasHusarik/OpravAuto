@@ -9,6 +9,7 @@ import Customers from "@/pages/Customers";
 import { useAuthContext } from "@/utils/authTypes";
 import NothingFound from "@/pages/NothingFound";
 import Customer from "@/pages/Customer";
+import Order from "./pages/Order";
 
 
 const App = () => {
@@ -47,6 +48,7 @@ const App = () => {
               <Route path="/" element={user ? <Navigate to="/orders" replace /> : <Navigate to="/login" replace />} />
               <Route path="/login" element={user ? <Navigate to="/orders" replace /> : <Login />} />
               <Route path="/orders" element={user ? <Orders /> : <Navigate to="/login" replace />} />
+              <Route path="/order" element={user ? <Order /> : <Navigate to="/login" replace />} />
               <Route path="/customers" element={user ? <Customers /> : <Navigate to="/login" replace />} />
               <Route path="/customer" element={user ? <Customer /> : <Navigate to="/login" replace />} />
               <Route path="*" element={<NothingFound />} />

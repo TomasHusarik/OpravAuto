@@ -18,6 +18,16 @@ api.interceptors.request.use((config) => {
 });
 
 //#region Order APIs 
+export const getOrder = async (orderId: string) => {
+    try {
+        const response = await api.get(`/orders/get-order/${orderId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching order:', error);
+        throw error;
+    }
+}
+
 export const getOrders = async () => {
     try {
         const response = await api.get('/orders/get-orders');

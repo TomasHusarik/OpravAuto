@@ -38,7 +38,7 @@ const OrdersTable = (props: IOrdersTable) => {
                 </Table.Thead>
                 <Table.Tbody>
                     {paginatedOrders?.map((o) => (
-                        <Table.Tr key={o._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/customer?customerId=`)}>
+                        <Table.Tr key={o._id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/order?orderId=${o._id}`)}>
                             <Table.Td>{o._id}</Table.Td>
                             <Table.Td>{o.status}</Table.Td>
                             <Table.Td>{o.customer?.firstName} {o.customer?.lastName}</Table.Td>
