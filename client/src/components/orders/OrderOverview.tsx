@@ -29,12 +29,12 @@ const OrderOverview = (props: IOrderOverview) => {
         }
     }
 
-    const handleEditFormChange = (value: any, name: string) => {
-        setOrder((prevOrder) => ({
-            ...prevOrder!,
-            [name]: value,
-        }));
-    };
+    // const handleEditFormChange = (value: any, name: string) => {
+    //     setOrder((prevOrder) => ({
+    //         ...prevOrder!,
+    //         [name]: value,
+    //     }));
+    // };
 
     useEffect(() => {
         loadData();
