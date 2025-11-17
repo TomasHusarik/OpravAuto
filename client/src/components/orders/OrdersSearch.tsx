@@ -9,7 +9,7 @@ const OrdersSearch = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
     const [inputFilter, setInputFilter] = useState<string>('');
-    const [status, setStatus] = useState<string[]>([]);
+    const [status, setStatus] = useState<string[]>(['Pending', 'InProgress']);
 
     const filterData = async () => {
         const filtered = orders.filter((order) => {
@@ -42,6 +42,8 @@ const OrdersSearch = () => {
     useEffect(() => {
         loadData();
     }, []);
+
+    console.log(status)
 
     return (
         <>
