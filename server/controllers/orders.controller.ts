@@ -5,8 +5,10 @@ import Order from '@models/Order';
 // GET /orders/get-order/:_id - Get order by ID
 export const getOrder = async (req: Request, res: Response) => {
     try{
-        // only find orders that are not deleted
-        const order = await Order.findOne({ _id: req.params._id, isDeleted: false }).populate('vehicle').populate('customer').lean();
+        const order = await Order.findOne({ _id: req.params._id, isDeleted: false })
+            .populate('vehicle')
+            .populate({ path: 'customer', populate: { path: 'vehicles', model: 'Vehicle' } })
+            .lean({ virtuals: true });
         if(!order){
             return  res.status(404).json({ message: 'Order not found' });
         }

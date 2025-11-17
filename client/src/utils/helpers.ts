@@ -1,9 +1,15 @@
 import { Technician } from "@/types/Technician";
 import { Customer } from "@/types/Customer";
+import { Vehicle } from "@/types/Vehicle";
 
 // Function to get full name of a user (Technician or Customer)
 export const getFullName = (user: Technician | Customer) => {
     return `${user?.lastName} ${user?.firstName}`;
+};
+
+// Function to get full name of a user (Technician or Customer)
+export const getVehicleName = (vehicle: Vehicle) => {
+    return `${vehicle?.make} ${vehicle?.model}`;
 };
 
 // Function to remove diacritics from a string and convert it to lowercase
