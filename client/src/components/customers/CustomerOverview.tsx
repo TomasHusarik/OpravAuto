@@ -7,6 +7,7 @@ import { IconEdit, IconTrash, IconArrowBackUp, IconAt, IconMapPin, IconPencil, I
 import { getFullName } from '@/utils/helpers';
 import { useNavigate } from 'react-router';
 import CustomerDrawer from '@/components/customers/CustomerDrawer';
+import VehicleDrawer from '@/components/customers/VehicleDrawer';
 
 interface ICustomerOverview {
   customerId?: string;
@@ -19,6 +20,8 @@ const CustomerOverview = (props: ICustomerOverview) => {
   const [customer, setCustomer] = useState<Customer>();
 
   const [userDrawer, setUserDrawer] = useState(false);
+
+  const [vehicleDrawer, setVehicleDrawer] = useState(false);
 
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>();
 
@@ -42,7 +45,7 @@ const CustomerOverview = (props: ICustomerOverview) => {
   
   const editVehicle = (vehicle: Vehicle) => {
     setSelectedVehicle(vehicle);
-    setUserDrawer(true);
+    setVehicleDrawer(true);
   }
 
     const handleDelete = async (id: string) => {
@@ -120,25 +123,38 @@ const CustomerOverview = (props: ICustomerOverview) => {
 
           </Grid.Col>
           <Grid.Col span={12} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <Button
+                variant="light"
+                radius="md"
+                onClick={() => { navigate("/customers") }}
+                leftSection={
+                  <IconArrowBackUp stroke={1.5} size={20} />
+                }
+              >
+                Back
+              </Button>
+              <Button
+                variant="light"
+                radius="md"
+                onClick={() => setUserDrawer(true)}
+                leftSection={
+                  <IconPencil stroke={1.5} size={20} />
+                }
+              >
+                Edit
+              </Button>
+            </div>
             <Button
-              variant="light"
+              variant="filled"
               radius="md"
-              onClick={() => { navigate("/customers") }}
-              leftSection={
-                <IconArrowBackUp stroke={1.5} size={20} />
-              }
+              color="blue"
+              onClick={() => {
+                setSelectedVehicle(undefined);
+                setVehicleDrawer(true);
+              }}
             >
-              Back
-            </Button>
-            <Button
-              variant="light"
-              radius="md"
-              onClick={() => setUserDrawer(true)}
-              leftSection={
-                <IconPencil stroke={1.5} size={20} />
-              }
-            >
-              Edit
+              Přidat vozidlo
             </Button>
           </Grid.Col>
           <Grid.Col span={12}>
@@ -179,6 +195,7 @@ const CustomerOverview = (props: ICustomerOverview) => {
       }
 
       <CustomerDrawer userDrawer={userDrawer} setUserDrawer={setUserDrawer} customer={customer} setCustomer={setCustomer} onSaveSuccess={() => { loadData() }} />
+      <VehicleDrawer vehicleDrawer={vehicleDrawer} setVehicleDrawer={setVehicleDrawer} vehicle={selectedVehicle} setVehicle={setSelectedVehicle} onSaveSuccess={() => { loadData() }} ownerId={customer?._id} />
     </>
   )
 }

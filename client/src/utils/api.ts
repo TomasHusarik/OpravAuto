@@ -1,4 +1,26 @@
 import { Customer } from '@/types/Customer';
+import { Vehicle } from '@/types/Vehicle';
+// Add new vehicle
+export const addVehicle = async (vehicleData: Vehicle) => {
+    try {
+        const response = await api.post('/vehicles/add-vehicle', vehicleData);
+        return response.data;
+    } catch (error) {
+        console.error('Error saving vehicle:', error);
+        throw error;
+    }
+};
+
+// Update vehicle
+export const updateVehicle = async (vehicleData: Vehicle) => {
+    try {
+        const response = await api.put(`/vehicles/update-vehicle/${vehicleData._id}`, vehicleData);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating vehicle:', error);
+        throw error;
+    }
+};
 import axios from 'axios';
 
 // Use environment variable or fallback to localhost for development
