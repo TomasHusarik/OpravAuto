@@ -101,6 +101,16 @@ export const getCustomer = async (customerId: string) => {
     }
 }
 
+export const deleteVehicle = async (vehicleId: string) => {
+    try {
+        const response = await api.delete(`/vehicles/delete-vehicle/${vehicleId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting vehicle:', error);
+        throw error;
+    }
+}
+
 //#region Auth APIs
 export const loginUser = async (email: string, password: string) => {
     try {
