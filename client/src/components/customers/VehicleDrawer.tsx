@@ -37,7 +37,7 @@ const VehicleDrawer = (props: IVehicleDrawer) => {
 			make: (val: string) => (val?.trim() ? null : em.mandatoryField),
 			model: (val: string) => (val?.trim() ? null : em.mandatoryField),
 			year: (val: number) => (val && val > 1900 ? null : em.mandatoryField),
-			vin: (val: string) => (val?.trim() ? null : em.mandatoryField),
+			vin: (val: string) => (val?.trim().length === 17 ? null : 'VIN must be exactly 17 characters'),
 			owner: (val: string) => (val?.trim() ? null : em.mandatoryField),
 		},
 	});
@@ -58,22 +58,26 @@ const VehicleDrawer = (props: IVehicleDrawer) => {
 		});
 	}, [vehicle, ownerId]);
 
-	const handleSave = async (values: typeof form.values) => {
-		setIsSaving(true);
-		try {
-			if (values._id) {
-				await updateVehicle(values);
-			} else {
-				await addVehicle(values);
+		const handleSave = async (values: typeof form.values) => {
+			setIsSaving(true);
+			try {
+				// Ensure owner is set (ownerId from props takes precedence)
+				const data = { ...values, owner: ownerId || values.owner } as any;
+				// Normalize VIN to uppercase and trimmed to 17 chars
+				if (data.vin) data.vin = data.vin.toUpperCase().trim().slice(0, 17);
+				if (values._id) {
+					await updateVehicle(data);
+				} else {
+					await addVehicle(data);
+				}
+				setVehicleDrawer(false);
+				onSaveSuccess?.();
+			} catch (error) {
+				console.error('Error saving vehicle:', error);
+			} finally {
+				setIsSaving(false);
 			}
-			setVehicleDrawer(false);
-			onSaveSuccess?.();
-		} catch (error) {
-			console.error('Error saving vehicle:', error);
-		} finally {
-			setIsSaving(false);
-		}
-	};
+		};
 
 	return (
 		<Drawer

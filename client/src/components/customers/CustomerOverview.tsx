@@ -154,7 +154,7 @@ const CustomerOverview = (props: ICustomerOverview) => {
                 setVehicleDrawer(true);
               }}
             >
-              Přidat vozidlo
+              Add vehicle
             </Button>
           </Grid.Col>
           <Grid.Col span={12}>
