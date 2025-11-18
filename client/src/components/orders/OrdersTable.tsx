@@ -1,5 +1,6 @@
 import { Order } from '@/types/Order';
-import { ActionIcon, Pagination, Table } from '@mantine/core';
+import { ActionIcon, NumberInput, Pagination, Table } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -8,20 +9,21 @@ interface IOrdersTable {
     orders: Order[];
 }
 
-const pageSize = 10;
-
 const OrdersTable = (props: IOrdersTable) => {
     const { orders } = props;
 
     const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
 
+    // debounce pageSize so table recalculation happens after user stops changing the input
+    const [debouncedPageSize] = useDebouncedValue(pageSize, 700);
 
     const navigate = useNavigate();
 
-    const totalPages = Math.ceil(orders.length / pageSize);
+    const totalPages = Math.ceil(orders.length / debouncedPageSize);
     const paginatedOrders = orders
         .sort((a, b) => a.createdAt!.localeCompare(b.createdAt!))
-        .slice((page - 1) * pageSize, page * pageSize)
+        .slice((page - 1) * debouncedPageSize, page * debouncedPageSize)
 
     return (
         <div className="table-container">
@@ -57,13 +59,28 @@ const OrdersTable = (props: IOrdersTable) => {
                     ))}
                 </Table.Tbody>
             </Table>
-            <Pagination
-                value={page}
-                onChange={setPage}
-                total={totalPages}
-                mt="md"
-                style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}
-            />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginBottom: 20, marginTop: 16 }}>
+                <div>
+                    <Pagination
+                        value={page}
+                        onChange={setPage}
+                        total={totalPages}
+                    />
+                </div>
+
+                <div>
+                    <NumberInput
+                        radius="xl"
+                        size="md"
+                        name="pageSize"
+                        min={1}
+                        max={orders.length}
+                        value={pageSize}
+                        onChange={(value) => setPageSize(value as number)}
+                        style={{ width: 100 }}
+                    />
+                </div>
+            </div>
         </div>
     )
 }
