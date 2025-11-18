@@ -1,8 +1,8 @@
 import { OrderItem } from '@/types/OrderItem';
-import { ServiceItem } from '@/types/ServiceItem';
-import { getServiceItems } from '@/utils/api';
+// import { ServiceItem } from '@/types/ServiceItem';
+// import { getServiceItems } from '@/utils/api';
 import { NumberInput, Table } from '@mantine/core';
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 
 interface IOrderItemsTable {
     items?: OrderItem[];
