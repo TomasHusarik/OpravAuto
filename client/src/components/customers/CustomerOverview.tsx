@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react'
-import { getCustomer } from '@/utils/api'
+import { getCustomer, deleteVehicle } from '@/utils/api'
 import { Customer } from '@/types/Customer';
-import { Button, Grid, Table, Textarea, TextInput, Title } from '@mantine/core';
-import { IconArrowBackUp, IconAt, IconMapPin, IconPencil, IconPhone, IconUser } from '@tabler/icons-react';
+import { Vehicle } from '@/types/Vehicle'
+import { ActionIcon, Button, Grid, Table, Textarea, TextInput, Title } from '@mantine/core';
+import { IconEdit, IconTrash, IconArrowBackUp, IconAt, IconMapPin, IconPencil, IconPhone, IconUser } from '@tabler/icons-react';
 import { getFullName } from '@/utils/helpers';
 import { useNavigate } from 'react-router';
 import CustomerDrawer from '@/components/customers/CustomerDrawer';
+import VehicleDrawer from '@/components/customers/VehicleDrawer';
 
 interface ICustomerOverview {
   customerId?: string;
 }
+
 
 const CustomerOverview = (props: ICustomerOverview) => {
   const { customerId } = props;
@@ -17,6 +20,10 @@ const CustomerOverview = (props: ICustomerOverview) => {
   const [customer, setCustomer] = useState<Customer>();
 
   const [userDrawer, setUserDrawer] = useState(false);
+
+  const [vehicleDrawer, setVehicleDrawer] = useState(false);
+
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>();
 
   const navigate = useNavigate();
 
@@ -36,6 +43,17 @@ const CustomerOverview = (props: ICustomerOverview) => {
     loadData();
   }, [customerId]);
   
+  const editVehicle = (vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+    setVehicleDrawer(true);
+  }
+
+    const handleDelete = async (id: string) => {
+        const confirmed = window.confirm('Are you sure you want to delete this vehicle?');
+        if (!confirmed) return;
+        await deleteVehicle(id);
+        loadData?.();
+    }
 
   return (
     <>
@@ -105,25 +123,38 @@ const CustomerOverview = (props: ICustomerOverview) => {
 
           </Grid.Col>
           <Grid.Col span={12} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <Button
+                variant="light"
+                radius="md"
+                onClick={() => { navigate("/customers") }}
+                leftSection={
+                  <IconArrowBackUp stroke={1.5} size={20} />
+                }
+              >
+                Back
+              </Button>
+              <Button
+                variant="light"
+                radius="md"
+                onClick={() => setUserDrawer(true)}
+                leftSection={
+                  <IconPencil stroke={1.5} size={20} />
+                }
+              >
+                Edit
+              </Button>
+            </div>
             <Button
-              variant="light"
+              variant="filled"
               radius="md"
-              onClick={() => { navigate("/customers") }}
-              leftSection={
-                <IconArrowBackUp stroke={1.5} size={20} />
-              }
+              color="blue"
+              onClick={() => {
+                setSelectedVehicle(undefined);
+                setVehicleDrawer(true);
+              }}
             >
-              Back
-            </Button>
-            <Button
-              variant="light"
-              radius="md"
-              onClick={() => setUserDrawer(true)}
-              leftSection={
-                <IconPencil stroke={1.5} size={20} />
-              }
-            >
-              Edit
+              Add vehicle
             </Button>
           </Grid.Col>
           <Grid.Col span={12}>
@@ -145,6 +176,16 @@ const CustomerOverview = (props: ICustomerOverview) => {
                             <Table.Td>{v.mileage?.toLocaleString() + " km"}</Table.Td>
                             <Table.Td>{v.engineType}</Table.Td>
                             <Table.Td>{v.color}</Table.Td>
+                            <Table.Td>
+                                <ActionIcon size={32} radius="xl" variant="subtle" onClick={(e) => { e.stopPropagation(); editVehicle(v); }}>
+                                    <IconEdit stroke={1.5} />
+                                </ActionIcon>
+                            </Table.Td>
+                            <Table.Td>
+                                <ActionIcon size={32} radius="xl" variant="subtle" onClick={(e) => { e.stopPropagation(); handleDelete(v._id!); }}>
+                                    <IconTrash stroke={1.5} />
+                                </ActionIcon>
+                            </Table.Td>
                         </Table.Tr>
                     ))}
                 </Table.Tbody>
@@ -154,6 +195,7 @@ const CustomerOverview = (props: ICustomerOverview) => {
       }
 
       <CustomerDrawer userDrawer={userDrawer} setUserDrawer={setUserDrawer} customer={customer} setCustomer={setCustomer} onSaveSuccess={() => { loadData() }} />
+      <VehicleDrawer vehicleDrawer={vehicleDrawer} setVehicleDrawer={setVehicleDrawer} vehicle={selectedVehicle} setVehicle={setSelectedVehicle} onSaveSuccess={() => { loadData() }} ownerId={customer?._id} />
     </>
   )
 }

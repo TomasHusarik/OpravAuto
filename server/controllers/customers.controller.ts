@@ -15,7 +15,7 @@ export const addCustomer = async (req: Request, res: Response) => {
 // GET /customers/get-customers/ - Get all !isDelete customers
 export const getCustomers = async (req: Request, res: Response) => {
     try {
-        const customers = await Customer.find({isDeleted: false });
+        const customers = await Customer.find({ isDeleted: false });
         res.status(200).json(customers);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -26,7 +26,11 @@ export const getCustomers = async (req: Request, res: Response) => {
 export const getCustomer = async (req: Request, res: Response) => {
 
     try {
-        const customer = await Customer.findById(req.params._id).populate('vehicles');
+        const customer = await Customer.findById(req.params._id).populate({
+            path: 'vehicles',
+            match: { isDeleted: false },
+        });
+
         if (!customer) {
             return res.status(404).json({ message: 'Customer not found' });
         }

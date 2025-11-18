@@ -1,8 +1,9 @@
 import { Customer } from '@/types/Customer';
 import { deleteCustomer } from '@/utils/api';
-import { ActionIcon, Pagination, Table } from '@mantine/core'
+import { ActionIcon, Grid, NumberInput, Pagination, Table, TextInput } from '@mantine/core'
+import { useDebouncedValue } from '@mantine/hooks'
 import { IconEdit, IconTrash } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 
 interface ICustomersTable {
@@ -12,14 +13,21 @@ interface ICustomersTable {
     loadData?: () => void;
 }
 
-const pageSize = 10;
-
 const CustomersTable = (props: ICustomersTable) => {
     const { filteredCustomers, setUserDrawer, setSelectedCustomer, loadData } = props;
 
     const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+
+    // debounce pageSize so table recalculation happens after user stops changing the input
+    const [debouncedPageSize] = useDebouncedValue(pageSize, 700);
 
     const navigate = useNavigate();
+
+    // if pageSize changes, reset to first page
+    useEffect(() => {
+        setPage(1);
+    }, [debouncedPageSize]);
 
     const handleDelete = async (id: string) => {
         const confirmed = window.confirm('Are you sure you want to delete this customer?');
@@ -33,10 +41,10 @@ const CustomersTable = (props: ICustomersTable) => {
         setUserDrawer(true);
     }
 
-    const totalPages = Math.ceil(filteredCustomers.length / pageSize);
+    const totalPages = Math.max(1, Math.ceil(filteredCustomers.length / debouncedPageSize));
     const paginatedCustomers = filteredCustomers
         .sort((a, b) => a.lastName!.localeCompare(b.lastName!))
-        .slice((page - 1) * pageSize, page * pageSize)
+        .slice((page - 1) * debouncedPageSize, page * debouncedPageSize)
 
     return (
         <div className="table-container">
@@ -72,14 +80,30 @@ const CustomersTable = (props: ICustomersTable) => {
                     ))}
                 </Table.Tbody>
             </Table>
-            <Pagination
-                value={page}
-                onChange={setPage}
-                total={totalPages}
-                mt="md"
-                style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}
-            />
-        </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginBottom: 20, marginTop: 16 }}>
+                <div>
+                    <Pagination
+                        value={page}
+                        onChange={setPage}
+                        total={totalPages}
+                    />
+                </div>
+
+                <div>
+                    <NumberInput
+                        radius="xl"
+                        size="md"
+                        name="pageSize"
+                        min={1}
+                        max={filteredCustomers.length}
+                        value={pageSize}
+                        onChange={(value) => setPageSize(value as number)}
+                        style={{ width: 100 }}
+                    />
+                </div>
+            </div>
+        </div >
     )
 }
 
