@@ -1,8 +1,8 @@
 import { OrderItem } from '@/types/OrderItem';
-// import { ServiceItem } from '@/types/ServiceItem';
-// import { getServiceItems } from '@/utils/api';
+import { ServiceItem } from '@/types/ServiceItem';
+import { getServiceItems } from '@/utils/api';
 import { NumberInput, Table } from '@mantine/core';
-// import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface IOrderItemsTable {
     items?: OrderItem[];
@@ -12,19 +12,19 @@ interface IOrderItemsTable {
 
 const OrderItemsTable = (props: IOrderItemsTable) => {
     const { items, handleItemChange, viewMode } = props;
-    // const [serviceItems, setServiceItems] = useState<ServiceItem[]>([]);
+    const [serviceItems, setServiceItems] = useState<ServiceItem[]>([]);
 
-    // useEffect(() => {
-    //     const loadService = async () => {
-    //         try {
-    //             const serviceItems = await getServiceItems();
-    //             setServiceItems(serviceItems);
-    //         } catch (error) {
-    //             console.error('Failed to load service items:', error);
-    //         }
-    //     };
-    //     loadService();
-    // }, []);
+    useEffect(() => {
+        const loadService = async () => {
+            try {
+                const serviceItems = await getServiceItems();
+                setServiceItems(serviceItems);
+            } catch (error) {
+                console.error('Failed to load service items:', error);
+            }
+        };
+        loadService();
+    }, []);
 
     return (
         <Table className='table'>
