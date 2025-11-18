@@ -1,6 +1,6 @@
 import { Customer } from '@/types/Customer';
 import { deleteCustomer } from '@/utils/api';
-import { ActionIcon, Grid, NumberInput, Pagination, Table, TextInput } from '@mantine/core'
+import { ActionIcon, NumberInput, Pagination, Table } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { useState, useEffect } from 'react';

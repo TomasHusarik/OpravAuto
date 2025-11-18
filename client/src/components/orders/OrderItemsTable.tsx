@@ -12,21 +12,19 @@ interface IOrderItemsTable {
 
 const OrderItemsTable = (props: IOrderItemsTable) => {
     const { items, handleItemChange, viewMode } = props;
-    const [serviceItems, setServiceItems] = useState<ServiceItem[]>([]);
+    // const [serviceItems, setServiceItems] = useState<ServiceItem[]>([]);
 
-    useEffect(() => {
-        const loadService = async () => {
-            try {
-                const serviceItems = await getServiceItems();
-                setServiceItems(serviceItems);
-            } catch (error) {
-                console.error('Failed to load service items:', error);
-            }
-        };
-        loadService();
-    }, []);
-
-    console.log('OrderItemsTable items:', items);
+    // useEffect(() => {
+    //     const loadService = async () => {
+    //         try {
+    //             const serviceItems = await getServiceItems();
+    //             setServiceItems(serviceItems);
+    //         } catch (error) {
+    //             console.error('Failed to load service items:', error);
+    //         }
+    //     };
+    //     loadService();
+    // }, []);
 
     return (
         <Table className='table'>
