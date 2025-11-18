@@ -1,7 +1,7 @@
 import { Order } from '@/types/Order';
 import { getOrder } from '@/utils/api';
-import { getFullName } from '@/utils/helpers';
-import { Grid, Switch, TextInput } from '@mantine/core';
+import { getFullName, getVehicleName } from '@/utils/helpers';
+import { Grid, Select, Switch, TextInput } from '@mantine/core';
 import { IconCar, IconUser } from '@tabler/icons-react';
 import { useEffect, useState } from 'react'
 
@@ -17,6 +17,12 @@ const OrderOverview = (props: IOrderOverview) => {
     const [viewMode, setViewMode] = useState<ViewMode>('technician');
     const [order, setOrder] = useState<Order>();
 
+    const handleEditFormChange = (updatedValues: any) => {
+        setOrder(prevOrder => ({
+            ...prevOrder,
+            ...updatedValues,
+        }));
+    };
 
     const loadData = async () => {
         if (!orderId) return;
@@ -40,6 +46,8 @@ const OrderOverview = (props: IOrderOverview) => {
         loadData();
     }, []);
 
+    console.log('order overview order:', order?.vehicle);
+
     return (
         <Grid>
             <Grid.Col span={12}>
@@ -54,7 +62,6 @@ const OrderOverview = (props: IOrderOverview) => {
             <Grid.Col span={6}>
                 <TextInput
                     label="Order ID"
-                    placeholder="orderId"
                     leftSection={<IconUser size={16} />}
                     radius="md"
                     size="md"
@@ -66,7 +73,6 @@ const OrderOverview = (props: IOrderOverview) => {
             <Grid.Col span={6}>
                 <TextInput
                     label="Full Name"
-                    placeholder="fullName"
                     leftSection={<IconUser size={16} />}
                     radius="md"
                     size="md"
@@ -76,15 +82,19 @@ const OrderOverview = (props: IOrderOverview) => {
                 />
             </Grid.Col>
             <Grid.Col span={6}>
-                <TextInput
+                <Select
                     label="Vehicle"
-                    placeholder="vehicle"
                     leftSection={<IconCar size={16} />}
                     radius="md"
                     size="md"
                     name="vehicle"
-                    value={(`${order?.vehicle?.make ?? ''} ${order?.vehicle?.model ?? ''}`).trim()}
-                    readOnly
+                    value={order?.vehicle?._id || ''}
+                    data={order?.customer?.vehicles?.map(v => ({ value: v._id, label: getVehicleName(v) })) || []}
+                    onChange={(vehicleId) => {
+                        const vehicleObj = order?.customer?.vehicles?.find(v => v._id === vehicleId) || undefined;
+                        handleEditFormChange({ vehicle: vehicleObj });
+                    }}
+                    readOnly={viewMode === 'customer'}
                 />
             </Grid.Col>
         </Grid>

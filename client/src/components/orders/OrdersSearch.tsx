@@ -8,19 +8,18 @@ import { orderStatuses } from '@/utils/const';
 const OrdersSearch = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
-    const [searchByOrder, setSearchByOrder] = useState<string>('');
-    const [searchByName, setSearchByName] = useState<string>('');
-    const [status, setStatus] = useState<string[]>([]);
+    const [inputFilter, setInputFilter] = useState<string>('');
+    const [status, setStatus] = useState<string[]>(['Pending', 'InProgress']);
 
     const filterData = async () => {
         const filtered = orders.filter((order) => {
-            const matchesOrderId = order._id?.toLowerCase().includes(searchByOrder.toLowerCase());
-            const matchesName = order.customer ? 
-                (`${order.customer.firstName} ${order.customer.lastName}`.toLowerCase().includes(searchByName.toLowerCase())) 
+            const matchesOrderId = order._id?.toLowerCase().includes(inputFilter.toLowerCase());
+            const matchesName = order.customer ?
+                (`${order.customer.firstName} ${order.customer.lastName}`.toLowerCase().includes(inputFilter.toLowerCase()))
                 : false;
             const matchesStatus = status.length === 0 || (order.status && status.includes(order.status.replace(" ", "")));
 
-            return matchesOrderId && matchesName && matchesStatus;
+            return (matchesOrderId || matchesName) && matchesStatus;
         });
         setFilteredOrders(filtered);
     };
@@ -38,11 +37,13 @@ const OrdersSearch = () => {
 
     useEffect(() => {
         filterData();
-    }, [status, searchByName, searchByOrder]);
+    }, [status, inputFilter]);
 
     useEffect(() => {
         loadData();
     }, []);
+
+    console.log(status)
 
     return (
         <>
@@ -54,24 +55,15 @@ const OrdersSearch = () => {
                     <TextInput
                         radius="xl"
                         size="md"
-                        placeholder="Search by order ID"
-                        value={searchByOrder}
-                        onChange={(e) => setSearchByOrder(e.target.value)}
-                    />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                    <TextInput
-                        radius="xl"
-                        size="md"
-                        placeholder="Search by name"
-                        value={searchByName}
-                        onChange={(e) => setSearchByName(e.target.value)}
+                        placeholder="Search by Order ID or Customer Name"
+                        value={inputFilter}
+                        onChange={(e) => setInputFilter(e.target.value)}
                     />
                 </Grid.Col>
                 <Grid.Col span={12}>
                     <Chip.Group multiple value={status} onChange={setStatus}>
                         <Group justify="left" mt="md">
-                            <Title order={4} mb={"10px"} c="var(--mantine-color-blue-light-color)">Status:</Title>
+                            {/* <Title order={4} mb={"10px"} c="var(--mantine-color-blue-light-color)">Status:</Title> */}
                             {Object.entries(orderStatuses).map(([key, label]) => (
                                 <Chip key={key} value={key}>{label}</Chip>
                             ))}
