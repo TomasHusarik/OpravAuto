@@ -1,0 +1,12 @@
+import { Request, Response } from 'express';
+import mongoose from 'mongoose';
+
+// GET /helpers/get-id - Get new MongoDB ID
+export const getNewId = async (req: Request, res: Response) => {
+    try {
+        const newId = new mongoose.Types.ObjectId();
+        res.status(200).json({ newId });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+}

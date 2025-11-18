@@ -7,6 +7,8 @@ import vehicleRoutes from '@routes/vehicles.routes';
 import authRoutes from '@routes/auth.routes';
 import customerRoutes from '@routes/customers.routes';
 import orderRoutes from '@routes/orders.routes';
+import helperRoutes from '@routes/helpers.routes';
+import itemRoutes from '@routes/items.routes';
 
 
 const PORT = env.PORT;
@@ -35,8 +37,8 @@ app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/orders', orderRoutes);
-
-
+app.use('/api/items', itemRoutes);
+app.use('/api/helpers', helperRoutes);
 
 app.listen(PORT, () => {
     connectDB();

@@ -17,6 +17,17 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+//#region Helpers APIs 
+export const getNewId = async () => {
+    try {
+        const response = await api.get('/helpers/get-id');
+        return response.data.newId;
+    } catch (error) {
+        console.error('Error fetching new MongoDB ID:', error);
+        throw error;
+    }
+}
+
 //#region Order APIs 
 export const getOrder = async (orderId: string) => {
     try {
@@ -34,6 +45,26 @@ export const getOrders = async () => {
         return response.data;
     } catch (error) {
         console.error('Error fetching orders:', error);
+        throw error;
+    }
+}
+
+export const createOrder = async (orderData: any) => {
+    try {
+        const response = await api.post('/orders/create-order', orderData);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating order:', error);
+        throw error;
+    }
+}
+
+export const updateOrder = async (orderData: any) => {
+    try {
+        const response = await api.put('/orders/update-order', orderData);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating order:', error);
         throw error;
     }
 }
@@ -97,6 +128,17 @@ export const getCustomer = async (customerId: string) => {
         return response.data;
     } catch (error) {
         console.error('Error fetching customer:', error);
+        throw error;
+    }
+}
+
+//#region Items APIs
+export const getServiceItems = async () => {
+    try {
+        const response = await api.get('/items/get-service-items');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching service items:', error);
         throw error;
     }
 }

@@ -1,5 +1,29 @@
 import mongoose from "mongoose";
 
+const orderItemSchema = new mongoose.Schema({
+    serviceItem: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ServiceItem',
+        required: false
+    },
+    label: {
+        type: String,
+        required: true
+    },
+    unitPrice: {
+        type: Number,
+        required: true
+    },
+    quantity: {
+        type: Number,
+        default: 1
+    },
+    totalPrice: {
+        type: Number,
+        required: true
+    },
+});
+
 const orderSchema = new mongoose.Schema({
     status: {
         type: String,
@@ -24,6 +48,7 @@ const orderSchema = new mongoose.Schema({
         ref: "Vehicle",
         required: true,
     },
+    items: [orderItemSchema],
     isDeleted: {
         type: Boolean,
         default: false,

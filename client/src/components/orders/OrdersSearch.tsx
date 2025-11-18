@@ -2,14 +2,18 @@ import { useEffect, useState } from 'react'
 import OrdersTable from './OrdersTable'
 import { getOrders } from '@/utils/api';
 import { Order } from '@/types/Order';
-import { Chip, Grid, Group, TextInput, Title } from '@mantine/core';
+import { ActionIcon, Chip, Grid, Group, TextInput, Title, Tooltip } from '@mantine/core';
 import { orderStatuses } from '@/utils/const';
+import { IconClipboard } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
 
 const OrdersSearch = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
     const [inputFilter, setInputFilter] = useState<string>('');
     const [status, setStatus] = useState<string[]>(['Pending', 'InProgress']);
+
+    const navigate = useNavigate();
 
     const filterData = async () => {
         const filtered = orders.filter((order) => {
@@ -23,7 +27,6 @@ const OrdersSearch = () => {
         });
         setFilteredOrders(filtered);
     };
-
 
     const loadData = async () => {
         try {
@@ -43,8 +46,6 @@ const OrdersSearch = () => {
         loadData();
     }, []);
 
-    console.log(status)
-
     return (
         <>
             <Grid>
@@ -58,6 +59,13 @@ const OrdersSearch = () => {
                         placeholder="Search by Order ID or Customer Name"
                         value={inputFilter}
                         onChange={(e) => setInputFilter(e.target.value)}
+                        rightSection={
+                            <Tooltip label="Add new customer">
+                                <ActionIcon size={32} radius="xl" variant="subtle" onClick={() => navigate('/order')} >
+                                    <IconClipboard stroke={1.5} />
+                                </ActionIcon>
+                            </Tooltip>
+                        }
                     />
                 </Grid.Col>
                 <Grid.Col span={12}>
