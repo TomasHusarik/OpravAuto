@@ -70,7 +70,7 @@ const OrdersTable = (props: IOrdersTable) => {
 
                 <div>
                     <NumberInput
-                        radius="xl"
+                        radius="md"
                         size="md"
                         name="pageSize"
                         min={1}
