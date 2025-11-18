@@ -1,26 +1,5 @@
 import { Customer } from '@/types/Customer';
 import { Vehicle } from '@/types/Vehicle';
-// Add new vehicle
-export const addVehicle = async (vehicleData: Vehicle) => {
-    try {
-        const response = await api.post('/vehicles/add-vehicle', vehicleData);
-        return response.data;
-    } catch (error) {
-        console.error('Error saving vehicle:', error);
-        throw error;
-    }
-};
-
-// Update vehicle
-export const updateVehicle = async (vehicleData: Vehicle) => {
-    try {
-        const response = await api.put(`/vehicles/update-vehicle/${vehicleData._id}`, vehicleData);
-        return response.data;
-    } catch (error) {
-        console.error('Error updating vehicle:', error);
-        throw error;
-    }
-};
 import axios from 'axios';
 
 // Use environment variable or fallback to localhost for development
@@ -67,6 +46,36 @@ export const getCustomerVehicles = async (ownerID: string) => {
         return response.data;
     } catch (error) {
         console.error('Error fetching vehicles:', error);
+        throw error;
+    }
+}
+
+export const addVehicle = async (vehicleData: Vehicle) => {
+    try {
+        const response = await api.post('/vehicles/add-vehicle', vehicleData);
+        return response.data;
+    } catch (error) {
+        console.error('Error saving vehicle:', error);
+        throw error;
+    }
+};
+
+export const updateVehicle = async (vehicleData: Vehicle) => {
+    try {
+        const response = await api.put(`/vehicles/update-vehicle/${vehicleData._id}`, vehicleData);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating vehicle:', error);
+        throw error;
+    }
+};
+
+export const deleteVehicle = async (vehicleId: string) => {
+    try {
+        const response = await api.delete(`/vehicles/delete-vehicle/${vehicleId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting vehicle:', error);
         throw error;
     }
 }
@@ -119,16 +128,6 @@ export const getCustomer = async (customerId: string) => {
         return response.data;
     } catch (error) {
         console.error('Error fetching customer:', error);
-        throw error;
-    }
-}
-
-export const deleteVehicle = async (vehicleId: string) => {
-    try {
-        const response = await api.delete(`/vehicles/delete-vehicle/${vehicleId}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error deleting vehicle:', error);
         throw error;
     }
 }

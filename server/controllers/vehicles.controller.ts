@@ -46,21 +46,21 @@ export const addVehicle = async (req: Request, res: Response) => {
         res.status(201).json({ message: 'Vehicle added successfully', vehicle: newVehicle });
     } catch (error: any) {
         console.error('Error adding vehicle:', error);
-        
+
         // Handle specific MongoDB errors
         if (error.code === 11000) {
-            return res.status(400).json({ 
-                message: 'A vehicle with this VIN already exists' 
+            return res.status(400).json({
+                message: 'A vehicle with this VIN already exists'
             });
         }
-        
+
         if (error.name === 'ValidationError') {
-            return res.status(400).json({ 
-                message: 'Validation error', 
-                details: error.message 
+            return res.status(400).json({
+                message: 'Validation error',
+                details: error.message
             });
         }
-        
+
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
@@ -70,11 +70,11 @@ export const getVehicle = async (req: Request, res: Response) => {
 
     try {
         const vehicle = await Vehicle.findById(req.params.id);
-        
+
         if (!vehicle) {
             return res.status(404).json({ message: 'Vehicle not found' });
         }
-        
+
         res.status(200).json(vehicle);
     } catch (error) {
         console.error('Error fetching vehicle:', error);
@@ -86,12 +86,12 @@ export const getVehicle = async (req: Request, res: Response) => {
 export const getVehicles = async (req: Request, res: Response) => {
 
     try {
-        const vehicles = await Vehicle.find({ owner: req.params.ownerId });
-        
+        const vehicles = await Vehicle.find({ owner: req.params.ownerId, isDeleted: false });
+
         if (!vehicles) {
             return res.status(404).json({ message: 'Vehicles not found' });
         }
-        
+
         res.status(200).json(vehicles);
     } catch (error) {
         console.error('Error fetching vehicles:', error);
@@ -107,11 +107,11 @@ export const updateVehicle = async (req: Request, res: Response) => {
             req.body,
             { new: true, runValidators: true }
         );
-        
+
         if (!vehicle) {
             return res.status(404).json({ message: 'Vehicle not found' });
         }
-        
+
         res.status(200).json({ message: 'Vehicle updated successfully', vehicle });
     } catch (error) {
         console.error('Error updating vehicle:', error);
@@ -121,23 +121,19 @@ export const updateVehicle = async (req: Request, res: Response) => {
 
 // DELETE /vehicles/delete-vehicle/:id - Soft delete vehicle
 export const deleteVehicle = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
     try {
-        const vehicle = await Vehicle.findByIdAndUpdate(
-            req.params.id,
-            { isDeleted: true },
-            { new: true, runValidators: true }
-        );
-        
+        const vehicle = await Vehicle.findById(id);
         if (!vehicle) {
             return res.status(404).json({ message: 'Vehicle not found' });
         }
-        
-        res.status(200).json({ 
-            message: 'Vehicle deleted successfully', 
-            vehicle 
-        });
+
+        vehicle.isDeleted = true;
+        await vehicle.save();
+
+        res.status(200).json({ message: 'Vehicle soft deleted', vehicle });
     } catch (error) {
-        console.error('Error deleting vehicle:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.status(500).json({ message: 'Server error', error });
     }
 };
