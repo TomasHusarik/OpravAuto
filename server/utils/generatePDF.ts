@@ -23,7 +23,6 @@ export const getPDFInvoice = (order: any, res: Response) => {
     // Stream directly to response
     doc.pipe(res);
 
-    // Build invoice
     generateHeader(doc);
     generateCustomerInformation(doc, order);
     generateOrderTable(doc, order);
