@@ -199,3 +199,14 @@ export const loginUser = async (email: string, password: string) => {
         throw error;
     }
 };
+
+// Update current user/profile (optional - backend may not implement)
+export const updateCurrentUser = async (data: any) => {
+    try {
+        const response = await api.put('/auth/update', data);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating current user:', error);
+        throw error;
+    }
+};

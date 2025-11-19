@@ -98,7 +98,15 @@ export function NavbarSimple(props: INavbarSimple) {
 
       {user &&
         <div className={classes.footer}>
-          <a className={classes.link} onClick={(event) => event.preventDefault()}>
+          <a
+            className={classes.link}
+            href="/user"
+            onClick={(event) => {
+              event.preventDefault();
+              setOpened?.(false);
+              navigate('/user');
+            }}
+          >
             <IconUser className={classes.linkIcon} stroke={1.5} />
             <span>{getFullName(user.technician)}</span>
           </a>

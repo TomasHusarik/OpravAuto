@@ -10,6 +10,7 @@ import { useAuthContext } from "@/utils/authTypes";
 import NothingFound from "@/pages/NothingFound";
 import Customer from "@/pages/Customer";
 import Order from "./pages/Order";
+import User from "@/pages/User";
 
 
 const App = () => {
@@ -51,6 +52,7 @@ const App = () => {
               <Route path="/order" element={user ? <Order /> : <Navigate to="/login" replace />} />
               <Route path="/customers" element={user ? <Customers /> : <Navigate to="/login" replace />} />
               <Route path="/customer" element={user ? <Customer /> : <Navigate to="/login" replace />} />
+              <Route path="/user" element={user ? <User /> : <Navigate to="/login" replace />} />
               <Route path="*" element={<NothingFound />} />
             </Routes>
           </AppShell.Main>
