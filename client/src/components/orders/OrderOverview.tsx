@@ -4,7 +4,7 @@ import { Vehicle } from '@/types/Vehicle';
 import { createOrder, getCustomers, getCustomerVehicles, getNewId, getOrder, updateOrder } from '@/utils/api';
 import { getFullName, getVehicleName } from '@/utils/helpers';
 import { Button, Grid, Select, Switch, TextInput } from '@mantine/core';
-import { IconCar, IconClipboardList, IconDeviceFloppy, IconUser } from '@tabler/icons-react';
+import { IconCar, IconCheck, IconClipboardList, IconDeviceFloppy, IconDownload, IconPlus, IconUser, IconListCheck } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react'
 import OrderItemsTable from './OrderItemsTable';
 
@@ -37,18 +37,44 @@ const OrderOverview = (props: IOrderOverview) => {
     const [saving, setSaving] = useState<boolean>(false);
 
     const handleItemChange = useCallback((itemId: string, updatedValues: any) => {
-        setOrder(prevOrder => ({
-            ...prevOrder,
-            items: prevOrder?.items?.map(item => {
+        setOrder(prevOrder => {
+            const updatedItems = prevOrder?.items?.map(item => {
                 if (item._id === itemId) {
                     const updated = { ...item, ...updatedValues };
                     updated.totalPrice = updated.quantity * updated.unitPrice;
                     return updated;
                 }
                 return item;
-            }) || []
-        }));
+            }) || [];
+
+            const totalCost = updatedItems.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
+
+            return {
+                ...prevOrder,
+                items: updatedItems,
+                totalCost: totalCost
+            };
+        });
     }, []);
+
+    const handleAddItem = async () => {
+        const newId = await getNewId();
+
+        const newItem: any = {
+            _id: newId,
+            label: '',
+            quantity: 1,
+            unitPrice: 0,
+            totalPrice: 0,
+        };
+
+        console.log('Adding new item:', newItem);
+
+        setOrder(prevOrder => ({
+            ...prevOrder,
+            items: [...(prevOrder?.items || []), newItem],
+        }));
+    }
 
     const customerOptions = customers?.map(c => ({
         value: c._id,
@@ -121,6 +147,7 @@ const OrderOverview = (props: IOrderOverview) => {
             notes: order?.notes ?? "",
             customer: selectedCustomerId,
             vehicle: selectedVehicleId,
+            items: order?.items
         };
 
         try {
@@ -191,6 +218,7 @@ const OrderOverview = (props: IOrderOverview) => {
             <Grid.Col span={6}>
                 <Select
                     label="Status"
+                    leftSection={<IconListCheck size={16} />}
                     radius="md"
                     size="md"
                     name="status"
@@ -204,17 +232,63 @@ const OrderOverview = (props: IOrderOverview) => {
                 <OrderItemsTable items={order?.items} viewMode={viewMode} handleItemChange={handleItemChange} />
             </Grid.Col>
             {viewMode === 'technician' &&
-                <Grid.Col span={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <>
+                    <Grid.Col span={6}>
+                        <Button
+                            variant="light"
+                            radius="md"
+                            onClick={handleAddItem}
+                            leftSection={
+                                <IconPlus stroke={1.5} size={20} />
+                            }
+                        >
+                            Add Item
+                        </Button>
+                    </Grid.Col>
+                    <Grid.Col span={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button
+                            variant="light"
+                            radius="md"
+                            loading={saving}
+                            onClick={handleSubmit}
+                            leftSection={
+                                <IconDeviceFloppy stroke={1.5} size={20} />
+                            }
+                        >
+                            Save
+                        </Button>
+                    </Grid.Col>
+                </>
+            }
+            <Grid.Col span={6}>
+                {viewMode === 'customer' && order?.status === 'Pending' &&
                     <Button
-                        variant="filled"
+                        variant="light"
+                        radius="md"
+                        onClick={handleAddItem}
+                        leftSection={
+                            <IconCheck stroke={1.5} size={20} />
+                        }
+                    >
+                        Approve
+                    </Button>
+                }
+            </Grid.Col>
+
+            {viewMode === 'customer' &&
+
+
+                <Grid.Col span={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button
+                        variant="light"
                         radius="md"
                         loading={saving}
                         onClick={handleSubmit}
                         leftSection={
-                            <IconDeviceFloppy stroke={1.5} size={20} color="white" />
+                            <IconDownload stroke={1.5} size={20} />
                         }
                     >
-                        Save
+                        Invoice
                     </Button>
                 </Grid.Col>
             }
