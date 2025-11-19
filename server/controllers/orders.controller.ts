@@ -1,5 +1,6 @@
 import e, { Request, Response } from 'express';
 import Order from '@models/Order';
+import { getPDFInvoice } from '@utils/generatePDF';
 
 
 // GET /orders/get-order/:_id - Get order by ID
@@ -73,6 +74,23 @@ export const deleteOrder = async (req: Request, res: Response) => {
         await order.save();
 
         res.status(200).json({ message: 'Order deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
+// GET /orders/download-invoice/:_id - Download invoice PDF
+export const downloadInvoice = async (req: Request, res: Response) => {
+    try {
+        const order = await Order.findOne({ _id: req.params._id, isDeleted: false })
+            .populate('vehicle')
+            .populate('customer')
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        getPDFInvoice(order, res);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }

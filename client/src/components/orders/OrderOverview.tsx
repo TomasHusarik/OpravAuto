@@ -1,7 +1,7 @@
 import { Customer } from '@/types/Customer';
 import { Order } from '@/types/Order';
 import { Vehicle } from '@/types/Vehicle';
-import { createOrder, getCustomers, getCustomerVehicles, getNewId, getOrder, updateOrder } from '@/utils/api';
+import { createOrder, downloadInvoice, getCustomers, getCustomerVehicles, getNewId, getOrder, updateOrder } from '@/utils/api';
 import { getFullName, getVehicleName } from '@/utils/helpers';
 import { Button, Grid, Select, Switch, TextInput } from '@mantine/core';
 import { IconCar, IconCheck, IconClipboardList, IconDeviceFloppy, IconDownload, IconPlus, IconUser, IconListCheck } from '@tabler/icons-react';
@@ -85,6 +85,22 @@ const OrderOverview = (props: IOrderOverview) => {
         value: v._id,
         label: getVehicleName(v)
     })) || [];
+
+    const handleDownloadInvoice = async () => {
+        try {
+            setSaving(true);
+            const blob = await downloadInvoice(order?._id);
+            const url = window.URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `invoice-${order?._id}.pdf`;
+            a.click();
+        } catch (error) {
+            console.error('Failed to download invoice:', error);
+        } finally {
+            setSaving(false);
+        }
+    };
 
     const loadData = async () => {
 
@@ -282,8 +298,7 @@ const OrderOverview = (props: IOrderOverview) => {
                     <Button
                         variant="light"
                         radius="md"
-                        loading={saving}
-                        onClick={handleSubmit}
+                        onClick={handleDownloadInvoice}
                         leftSection={
                             <IconDownload stroke={1.5} size={20} />
                         }

@@ -70,6 +70,18 @@ export const updateOrder = async (orderData: any) => {
     }
 }
 
+export const downloadInvoice = async (orderId: string) => {
+    try {
+        const response = await api.get(`/orders/download-invoice/${orderId}`, {
+            responseType: 'blob',
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error downloading invoice:', error);
+        throw error;
+    }
+}
+
 //#region Vehicle APIs
 export const getCustomerVehicles = async (ownerID: string) => {
     try {
