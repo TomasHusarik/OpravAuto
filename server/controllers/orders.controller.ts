@@ -3,6 +3,8 @@ import Order from '@models/Order';
 import { getPDFInvoice } from '@utils/generatePDF';
 import bcrypt from "bcrypt";
 import { generateAccessCode } from '@utils/helpers';
+import { sendAccessCodeEmail } from '@utils/mailAccessCode';
+import Customer from '@models/Customer';
 
 // GET /orders/get-order/:_id - Get order by ID
 export const getOrder = async (req: Request, res: Response) => {
@@ -42,17 +44,18 @@ export const createOrder = async (req: Request, res: Response) => {
 
         const newOrder = await Order.create({ ...req.body, accessCode: accessCode });
 
-        // const customerEmail = req.body.customer.email;
+        const customerEmail = await Customer.findById(req.body.customer).select('email').lean().then(c => c.email);
 
-        // if (customerEmail) {
-        //     try {
-        //         await sendAccessCodeEmail(customerEmail, newOrder._id.toString(), accessCode);
-        //     } catch (mailError) {
-        //         console.error('Error sending access code email:', mailError);
-        //     }
-        // } else {
-        //     console.warn('No customer email provided, cannot send access code.');
-        // }
+        if (customerEmail) {
+            try {
+                await sendAccessCodeEmail( customerEmail, newOrder._id.toString(), accessCode);
+
+            } catch (mailError) {
+                console.error('Error sending access code email:', mailError);
+            }
+        } else {
+            console.warn('No customer email provided, cannot send access code.');
+        }
 
         // Remove AccessCode from response
         const { accessCode: _, ...savedOrder } = newOrder.toObject();

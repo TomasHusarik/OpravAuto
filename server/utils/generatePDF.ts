@@ -15,7 +15,7 @@ const fontBold = fs.readFileSync(
     path.join(__dirname, '..', 'assets', 'fonts', 'DejaVuSans-Bold.ttf')
 );
 const logoPath = fs.readFileSync(
-    path.join(__dirname, '..', 'assets', 'opravAuto.png')
+    path.join(__dirname, '..', 'assets', 'opravAuto100x100.png')
 );
 
 export const getPDFInvoice = async (order: any, res: Response) => {
