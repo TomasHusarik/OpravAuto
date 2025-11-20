@@ -2,16 +2,17 @@ import { useEffect, useState } from 'react';
 import { useForm } from '@mantine/form';
 import { TextInput, Grid, Button, Title, PasswordInput } from '@mantine/core';
 import { updateCurrentUser } from '@/utils/api';
-
+import { useAuthContext } from '@/utils/authTypes';
+ 
 interface CurrentUser {
   token?: string;
   technician?: any;
 }
-
+ 
 const User = () => {
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<CurrentUser | null>(null);
-
+  const { user: authUser, dispatch } = useAuthContext();
+ 
   const form = useForm({
     initialValues: {
       firstName: '',
@@ -27,27 +28,22 @@ const User = () => {
       passwordConfirm: (val, values) => (values.password && val !== values.password ? 'Passwords do not match' : null),
     },
   });
-
+ 
   useEffect(() => {
-    const raw = localStorage.getItem('user');
-    if (!raw) return;
-    try {
-      const parsed = JSON.parse(raw);
-      setUser(parsed);
-      const tech = parsed.technician || parsed.user || parsed;
-      form.setValues({
-        firstName: tech?.firstName || '',
-        lastName: tech?.lastName || '',
-        email: tech?.email || '',
-        phoneNumber: tech?.phoneNumber || '',
-        password: '',
-        passwordConfirm: '',
-      });
-    } catch (err) {
-      console.error('Failed to parse user from localStorage', err);
-    }
-  }, []);
-
+    // Prefer context user, fallback to localStorage
+    const current = authUser || JSON.parse(localStorage.getItem('user') || 'null');
+    if (!current) return;
+    const tech = current.technician || current.user || current;
+    form.setValues({
+      firstName: tech?.firstName || '',
+      lastName: tech?.lastName || '',
+      email: tech?.email || '',
+      phoneNumber: tech?.phoneNumber || '',
+      password: '',
+      passwordConfirm: '',
+    });
+  }, [authUser]);
+ 
   const handleSave = async (vals: typeof form.values) => {
     setLoading(true);
     try {
@@ -57,38 +53,43 @@ const User = () => {
         phoneNumber: vals.phoneNumber,
       };
       if (vals.password) payload.password = vals.password;
-
+ 
       try {
         const res = await updateCurrentUser(payload);
+        // Server returned updated user/token
         if (res?.technician || res?.token) {
-          const current = JSON.parse(localStorage.getItem('user') || 'null') || {};
           const technician = res.technician || res.user || payload;
-          const token = res.token || current.token;
-          const newStore = { ...current, technician, token };
+          const token = res.token || (authUser && (authUser as any).token) || '';
+          const newStore = { technician, token };
           localStorage.setItem('user', JSON.stringify(newStore));
-          setUser(newStore);
+          // update global auth state
+          dispatch({ type: 'LOGIN', payload: newStore as any });
           alert('Profile updated');
         } else {
+          // No server response with updated data, update local copy and keep existing token
           const current = JSON.parse(localStorage.getItem('user') || 'null') || {};
           const technician = { ...(current.technician || {}), ...payload };
-          const newStore = { ...current, technician };
+          const token = current.token || (authUser && (authUser as any).token) || '';
+          const newStore = { technician, token };
           localStorage.setItem('user', JSON.stringify(newStore));
-          setUser(newStore);
+          dispatch({ type: 'LOGIN', payload: newStore as any });
           alert('Profile updated locally (server not available)');
         }
       } catch (err) {
+        // On network/server error: update local copy and auth context
         const current = JSON.parse(localStorage.getItem('user') || 'null') || {};
         const technician = { ...(current.technician || {}), ...payload };
-        const newStore = { ...current, technician };
+        const token = current.token || (authUser && (authUser as any).token) || '';
+        const newStore = { technician, token };
         localStorage.setItem('user', JSON.stringify(newStore));
-        setUser(newStore);
+        dispatch({ type: 'LOGIN', payload: newStore as any });
         alert('Profile updated locally (server call failed)');
       }
     } finally {
       setLoading(false);
     }
   };
-
+ 
   return (
     <div style={{ padding: 20 }}>
       <Title order={2} mb={16}>Můj profil</Title>
@@ -120,5 +121,5 @@ const User = () => {
     </div>
   )
 }
-
+ 
 export default User
