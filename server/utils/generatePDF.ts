@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import PDFDocument from 'pdfkit';
 import path from 'path';
 import fs from 'fs';
+import QRCode from 'qrcode';
 import type { Customer } from '../types/Customer';
 import type { Order } from '../types/Order';
 import type { Vehicle } from '../types/Vehicle';
@@ -17,8 +18,7 @@ const logoPath = fs.readFileSync(
     path.join(__dirname, '..', 'assets', 'opravAuto.png')
 );
 
-export const getPDFInvoice = (order: any, res: Response) => {
-    console.log('Generating PDF invoice for order:', order._id);
+export const getPDFInvoice = async (order: any, res: Response) => {
     // ----- HTTP headers -----
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
@@ -34,12 +34,21 @@ export const getPDFInvoice = (order: any, res: Response) => {
     generateHeader(doc);
     generateCustomerInformation(doc, order);
     generateOrderTable(doc, order);
-    generateFooter(doc);
+    // Generuj QR kód
+    const qrCodeDataUrl = await QRCode.toDataURL(generatePaymentString(order));
+    generateFooter(doc, qrCodeDataUrl);
 
-    console.log('End PDF invoice for order:', order._id);
     doc.end();
 };
 
+const generatePaymentString = (order: Order): string => {
+    const iban = `CZ9355000000001030170064`;
+    
+    // Variabilní symbol - pouze čísla (bez pomlček a speciálních znaků)
+    const variableSymbol = order._id.toString().replace(/[^0-9]/g, '').slice(0, 10) || '0';
+    
+    return `SPD*1.0*ACC:${iban}*AM:${(order.totalCost).toFixed(2)}*CC:CZK*MSG:Faktura*X-VS:${variableSymbol}`;
+};
 
 const generateHeader = (doc: PDFKit.PDFDocument) => {
 
@@ -168,11 +177,36 @@ const generateOrderTable = (doc: PDFKit.PDFDocument, order: Order) => {
         generateHr(doc, position + 20);
     }
 
+    const subtotal = order.totalCost / 1.21;
+    const vat = order.totalCost - subtotal;
     const duePosition = invoiceTableTop + (i + 1) * 30 + 20;
+    
     doc.font(fontBold);
     generateTableRow(
         doc,
         duePosition,
+        '',
+        'Součet bez DPH',
+        '',
+        formatCurrency(subtotal)
+    );
+    
+    generateHr(doc, duePosition + 20);
+    doc.font(fontRegular);
+    generateTableRow(
+        doc,
+        duePosition + 30,
+        '',
+        'DPH (21%)',
+        '',
+        formatCurrency(vat)
+    );
+    
+    generateHr(doc, duePosition + 50);
+    doc.font(fontBold);
+    generateTableRow(
+        doc,
+        duePosition + 60,
         '',
         'Celkem k úhradě',
         '',
@@ -181,8 +215,22 @@ const generateOrderTable = (doc: PDFKit.PDFDocument, order: Order) => {
     doc.font(fontRegular);
 };
 
-const generateFooter = (doc: PDFKit.PDFDocument) => {
+const generateFooter = (doc: PDFKit.PDFDocument, qrCodeDataUrl: string) => {
+    const footerY = 690;
+    
+    // QR kód vpravo
+    try {
+        doc.image(qrCodeDataUrl, 50, footerY - 20, { width: 90 });
+        doc
+            .font(fontRegular)
+            .fontSize(8)
+            .text('Rychlá platba', 50, footerY + 75, { width: 90, align: 'center' })
+            .text('1030170064/5500', 50, footerY + 90, { width: 90, align: 'center' });
+    } catch (error) {
+        console.error('Chyba při generování QR kódu:', error);
+    }
 
+        // Text vlevo
     doc
         .font(fontRegular)
         .fontSize(10)
