@@ -18,6 +18,7 @@ const logoPath = fs.readFileSync(
 );
 
 export const getPDFInvoice = (order: any, res: Response) => {
+    console.log('Generating PDF invoice for order:', order._id);
     // ----- HTTP headers -----
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
@@ -35,6 +36,7 @@ export const getPDFInvoice = (order: any, res: Response) => {
     generateOrderTable(doc, order);
     generateFooter(doc);
 
+    console.log('End PDF invoice for order:', order._id);
     doc.end();
 };
 

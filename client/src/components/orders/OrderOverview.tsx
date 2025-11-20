@@ -299,6 +299,7 @@ const OrderOverview = (props: IOrderOverview) => {
                         variant="light"
                         radius="md"
                         onClick={handleDownloadInvoice}
+                        loading={saving}
                         leftSection={
                             <IconDownload stroke={1.5} size={20} />
                         }
