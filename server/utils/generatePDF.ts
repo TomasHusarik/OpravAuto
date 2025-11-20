@@ -1,14 +1,21 @@
 import { Request, Response } from 'express';
 import PDFDocument from 'pdfkit';
 import path from 'path';
+import fs from 'fs';
 import type { Customer } from '../types/Customer';
 import type { Order } from '../types/Order';
 import type { Vehicle } from '../types/Vehicle';
 import { OrderItem } from '../types/OrderItem';
 
-const logoPath = path.join(__dirname, '..', 'assets', 'opravAuto.png');
-const fontRegular = path.join(__dirname, '..', 'assets', 'fonts', 'DejaVuSans.ttf');
-const fontBold = path.join(__dirname, '..', 'assets', 'fonts', 'DejaVuSans-Bold.ttf');
+const fontRegular = fs.readFileSync(
+    path.join(__dirname, '..', 'assets', 'fonts', 'DejaVuSans.ttf')
+);
+const fontBold = fs.readFileSync(
+    path.join(__dirname, '..', 'assets', 'fonts', 'DejaVuSans-Bold.ttf')
+);
+const logoPath = fs.readFileSync(
+    path.join(__dirname, '..', 'assets', 'opravAuto.png')
+);
 
 export const getPDFInvoice = (order: any, res: Response) => {
     // ----- HTTP headers -----
