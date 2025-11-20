@@ -1,5 +1,6 @@
 import express from 'express';
-import { login, signUp, updateProfile } from '@controllers/auth.controller';
+import { login, signUp } from '@controllers/auth.controller';
+import { updateProfile } from '@controllers/technicians.controller';
 import requireAuth from '@middleware/requireAuth';
 
 const router = express.Router();
