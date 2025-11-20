@@ -1,5 +1,5 @@
 import e, { Request, Response } from 'express';
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import env from '@utils/validateEnv';
@@ -7,6 +7,7 @@ import env from '@utils/validateEnv';
 import Technician from '@models/Technician';
 import ErrorMessages from '@utils/errorMessages';
 import mongoose, { ObjectId } from 'mongoose';
+import Order from '@models/Order';
 
 const createToken = (_id: mongoose.Types.ObjectId) => {
     return jwt.sign(
@@ -15,6 +16,41 @@ const createToken = (_id: mongoose.Types.ObjectId) => {
         { expiresIn: '24h' }
     );
 }
+
+//POST /customers/verify-access-code - Verify access code and get token
+export const verifyAccessCode = async (req: Request, res: Response) => {
+    const { accessCode } = req.body;
+
+    try {
+        if (!accessCode) {
+            return res.status(400).json({ error: 'Access code is required' });
+        }
+
+        // Find order by access code
+        const order = await Order.findOne({ accessCode, isDeleted: false })
+            .select('+accessCode')
+            .populate('customer')
+            .populate('vehicle');
+        if (!order) {
+            return res.status(401).json({ error: 'Invalid access code' });
+        }
+
+        const isMatch = order.accessCode === accessCode;
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Invalid access code' });
+        }
+
+        const token = createToken(order._id);
+
+        return res.status(200).json({
+            token,
+            orderId: order._id,
+            customer: order.customer,
+        }); 
+    } catch (error) {
+        return res.status(500).json({ error: 'Server error' });
+    }
+};
 
 // POST /technicians/login - Technician login
 export const login = async (req: Request, res: Response) => {
@@ -84,7 +120,7 @@ export const signUp = async (req: Request, res: Response) => {
         // Remove password from response
         const { password: _, ...technicianData } = newTechnician.toObject();
 
-        return res.status(201).json({ technician: technicianData, token } );
+        return res.status(201).json({ technician: technicianData, token });
     } catch (error) {
         return res.status(500).json({ error: ErrorMessages.internalServerError });
     }

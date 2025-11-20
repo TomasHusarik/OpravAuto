@@ -49,6 +49,11 @@ const orderSchema = new mongoose.Schema({
         required: true,
     },
     items: [orderItemSchema],
+    accessCode: {
+        type: String,
+        unique: true,
+        required: true,
+    },
     isDeleted: {
         type: Boolean,
         default: false,

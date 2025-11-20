@@ -1,21 +1,33 @@
+import { Customer } from '@/types/Customer';
+import { Order } from '@/types/Order';
 import { Technician } from '@/types/Technician';
 import { createContext, useContext } from 'react';
 import { useNavigate } from 'react-router';
 
-// Define the login response interface
+// Define the login response interface for technicians
 export interface LoginResponse {
   technician: Technician;
   token: string;
 }
 
+// Define customer login response
+export interface CustomerLoginResponse {
+  customer: Customer;
+  orderId: string; // Order ID returned by server
+  token: string;
+}
+
 // Define the auth state interface
 export interface AuthState {
-  user: LoginResponse | null;
+  user: (LoginResponse | CustomerLoginResponse) | null;
+  userType?: 'technician' | 'customer'; // To distinguish between technician and customer
+  orderId?: string; // For customer orders
 }
 
 // Define the auth actions
 export type AuthAction =
-  | { type: 'LOGIN'; payload: LoginResponse }
+  | { type: 'LOGIN'; payload: LoginResponse; userType?: 'technician' }
+  | { type: 'CUSTOMER_LOGIN'; payload: CustomerLoginResponse; userType: 'customer' }
   | { type: 'LOGOUT' };
 
 // Define the context type
@@ -29,9 +41,11 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case 'LOGIN':
-      return { user: action.payload };
+      return { user: action.payload, userType: action.userType || 'technician' };
+    case 'CUSTOMER_LOGIN':
+      return { user: action.payload, userType: action.userType || 'customer', orderId: action.payload.orderId };
     case 'LOGOUT':
-      return { user: null };
+      return { user: null, userType: undefined };
     default:
       return state;
   }
@@ -57,4 +71,15 @@ export const useLogout = () => {
   }
   
   return logout;
-}
+};
+
+export const getUser = (user: LoginResponse | CustomerLoginResponse | null, userType?: string) => {
+  if (!user) return null;
+  if (userType === "technician" && "technician" in user) {
+    return user.technician;
+  }
+  if (userType === "customer" && "customer" in user) {
+    return user.customer;
+  }
+  return null;
+};

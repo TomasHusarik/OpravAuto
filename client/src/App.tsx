@@ -15,7 +15,7 @@ import User from "@/pages/User";
 
 const App = () => {
   const [opened, { toggle }] = useDisclosure();
-  const { user, loading } = useAuthContext();
+  const { userType, orderId, loading } = useAuthContext();
   const isMobile = useMediaQuery('(max-width: 48em)');
 
   return (
@@ -46,13 +46,13 @@ const App = () => {
         {!loading &&
           <AppShell.Main mx={"xl"} pt={"xl"} style={{ marginTop: isMobile ? 60 : 0 }}>
             <Routes>
-              <Route path="/" element={user ? <Navigate to="/orders" replace /> : <Navigate to="/login" replace />} />
-              <Route path="/login" element={user ? <Navigate to="/orders" replace /> : <Login />} />
-              <Route path="/orders" element={user ? <Orders /> : <Navigate to="/login" replace />} />
-              <Route path="/order" element={user ? <Order /> : <Navigate to="/login" replace />} />
-              <Route path="/customers" element={user ? <Customers /> : <Navigate to="/login" replace />} />
-              <Route path="/customer" element={user ? <Customer /> : <Navigate to="/login" replace />} />
-              <Route path="/user" element={user ? <User /> : <Navigate to="/login" replace />} />
+              <Route path="/" element={userType == "technician" ? <Navigate to="/orders" replace /> : <Navigate to="/login" replace />} />
+              <Route path="/login" element={userType == "technician" ? <Navigate to="/orders" replace /> : userType == "customer" ? <Navigate to={`/order?orderId=${orderId}`} replace /> : <Login />} />
+              <Route path="/orders" element={userType == "technician"  ? <Orders /> : <Navigate to="/login" replace />} />
+              <Route path="/order" element={userType == "technician" || "customer"  ? <Order /> : <Navigate to="/login" replace />} />
+              <Route path="/customers" element={userType == "technician"  ? <Customers /> : <Navigate to="/login" replace />} />
+              <Route path="/customer" element={userType == "technician"  ? <Customer /> : <Navigate to="/login" replace />} />
+              <Route path="/user" element={userType == "technician"  ? <User /> : <Navigate to="/login" replace />} />
               <Route path="*" element={<NothingFound />} />
             </Routes>
           </AppShell.Main>

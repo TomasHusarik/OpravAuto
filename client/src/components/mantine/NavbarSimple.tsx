@@ -10,17 +10,8 @@ import {
 import { Divider, Group, Image, Text } from '@mantine/core';
 import classes from './NavbarSimple.module.css';
 import { ActionToggle } from './ActionToggle';
-import { useAuthContext, useLogout } from '@/utils/authTypes';
+import { useAuthContext, useLogout, getUser } from '@/utils/authTypes';
 import { getFullName } from '@/utils/helpers';
-
-const data = [
-  { link: '/orders', label: 'Orders', icon: IconClipboardList },
-  { link: '/customers', label: 'Customers', icon: IconUsers }
-];
-
-const guestData = [
-  { link: '/login', label: 'Login', icon: IconLogin },
-];
 
 interface INavbarSimple {
   setOpened: (opened: boolean) => void;
@@ -33,11 +24,24 @@ export function NavbarSimple(props: INavbarSimple) {
   const logout = useLogout();
   const location = useLocation();
   const [active, setActive] = useState('');
-  const { user } = useAuthContext();
+  const { user, userType, orderId } = useAuthContext();
+
+  const technicianData = [
+    { link: '/orders', label: 'Orders', icon: IconClipboardList },
+    { link: '/customers', label: 'Customers', icon: IconUsers }
+  ];
+
+  const customerData = [
+    { link: `order?orderId=${orderId}`, label: 'My Order', icon: IconClipboardList },
+  ];
+
+  const guestData = [
+    { link: '/login', label: 'Login', icon: IconLogin },
+  ];
 
   // Update active based on current route
   useEffect(() => {
-    const allItems = [...data, ...guestData];
+    const allItems = [...technicianData, ...customerData, ...guestData];
     const currentRoute = allItems.find(item => item.link === location.pathname);
     if (currentRoute) {
       setActive(currentRoute.label);
@@ -46,7 +50,7 @@ export function NavbarSimple(props: INavbarSimple) {
     }
   }, [location.pathname]);
 
-  const navItems = user ? data : guestData;
+  const navItems = userType === "technician" ? technicianData : userType === "customer" ? customerData : guestData;
 
   const links = navItems.map((item) => (
     <a
@@ -70,10 +74,10 @@ export function NavbarSimple(props: INavbarSimple) {
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
         <Group className={classes.header} justify="space-between">
-          <div style={{ display: "flex", justifyContent: "space-between", cursor: 'pointer' }} onClick={() => {setOpened?.(false); navigate('/');}}>
+          <div style={{ display: "flex", justifyContent: "space-between", cursor: 'pointer' }} onClick={() => { setOpened?.(false); navigate('/'); }}>
             <Image src="/opravAuto.png" alt="OpravAuto Logo" w={32} h={32} style={{ marginLeft: "10px" }} />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", cursor: 'pointer' }} onClick={() => {setOpened?.(false); navigate('/');}}>
+          <div style={{ display: "flex", justifyContent: "space-between", cursor: 'pointer' }} onClick={() => { setOpened?.(false); navigate('/'); }}>
             <Text
               fw={700}
               size="lg"
@@ -108,7 +112,9 @@ export function NavbarSimple(props: INavbarSimple) {
             }}
           >
             <IconUser className={classes.linkIcon} stroke={1.5} />
-            <span>{getFullName(user.technician)}</span>
+            <span>
+              {getFullName(getUser(user, userType))}
+            </span>
           </a>
           <Divider my="sm" />
 

@@ -1,7 +1,8 @@
 import e, { Request, Response } from 'express';
 import Order from '@models/Order';
 import { getPDFInvoice } from '@utils/generatePDF';
-
+import bcrypt from "bcrypt";
+import { generateAccessCode } from '@utils/helpers';
 
 // GET /orders/get-order/:_id - Get order by ID
 export const getOrder = async (req: Request, res: Response) => {
@@ -32,8 +33,30 @@ export const getOrders = async (req: Request, res: Response) => {
 // POST /orders/create-order - Create new order
 export const createOrder = async (req: Request, res: Response) => {
     try {
-        const newOrder = new Order(req.body);
-        const savedOrder = await newOrder.save();
+
+        const accessCode = generateAccessCode();
+
+        //TODO: Hashing can be added later if needed
+        // const salt = await bcrypt.genSalt(10);
+        // const hash = await bcrypt.hash(accessCode, salt);
+
+        const newOrder = await Order.create({ ...req.body, accessCode: accessCode });
+
+        // const customerEmail = req.body.customer.email;
+
+        // if (customerEmail) {
+        //     try {
+        //         await sendAccessCodeEmail(customerEmail, newOrder._id.toString(), accessCode);
+        //     } catch (mailError) {
+        //         console.error('Error sending access code email:', mailError);
+        //     }
+        // } else {
+        //     console.warn('No customer email provided, cannot send access code.');
+        // }
+
+        // Remove AccessCode from response
+        const { accessCode: _, ...savedOrder } = newOrder.toObject();
+
         res.status(201).json(savedOrder);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });

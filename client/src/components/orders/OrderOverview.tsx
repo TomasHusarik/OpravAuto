@@ -7,6 +7,7 @@ import { Button, Grid, Select, Switch, TextInput } from '@mantine/core';
 import { IconCar, IconCheck, IconClipboardList, IconDeviceFloppy, IconDownload, IconPlus, IconUser, IconListCheck } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react'
 import OrderItemsTable from './OrderItemsTable';
+import { useAuthContext } from '@/utils/authTypes';
 
 interface IOrderOverview {
     orderId: string;
@@ -25,7 +26,9 @@ const OrderOverview = (props: IOrderOverview) => {
     const { orderId } = props;
     const isNew = !orderId;
 
-    const [viewMode, setViewMode] = useState<ViewMode>('technician');
+    const { userType } = useAuthContext();
+
+    const [viewMode, setViewMode] = useState<ViewMode>(userType);
 
     const [order, setOrder] = useState<Order>();
     const [customers, setCustomers] = useState<Customer[]>();
@@ -182,7 +185,7 @@ const OrderOverview = (props: IOrderOverview) => {
 
     return (
         <Grid>
-            <Grid.Col span={12}>
+            {/* <Grid.Col span={12}>
                 <Switch
                     checked={viewMode === 'technician'}
                     label="Switch mode"
@@ -190,7 +193,7 @@ const OrderOverview = (props: IOrderOverview) => {
                     size="md"
                     onChange={(event) => setViewMode(event.currentTarget.checked ? 'technician' : 'customer')}
                 />
-            </Grid.Col>
+            </Grid.Col> */}
             <Grid.Col span={6}>
                 <TextInput
                     label="Order ID"

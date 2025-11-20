@@ -200,6 +200,18 @@ export const loginUser = async (email: string, password: string) => {
     }
 };
 
+export const verifyCustomerAccessCode = async (accessCode: string) => {
+    try {
+        const response = await api.post('/auth/verify-access-code', {
+            accessCode
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error verifying access code:', error);
+        throw error;
+    }
+};
+
 // Update current user/profile (optional - backend may not implement)
 export const updateCurrentUser = async (data: any) => {
     try {
