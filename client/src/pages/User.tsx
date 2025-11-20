@@ -54,7 +54,6 @@ const User = () => {
       const payload: any = {
         firstName: vals.firstName,
         lastName: vals.lastName,
-        email: vals.email,
         phoneNumber: vals.phoneNumber,
       };
       if (vals.password) payload.password = vals.password;
@@ -102,7 +101,7 @@ const User = () => {
             <TextInput label="Last Name" required value={form.values.lastName} onChange={(e) => form.setFieldValue('lastName', e.currentTarget.value)} />
           </Grid.Col>
           <Grid.Col span={6}>
-            <TextInput label="Email" required value={form.values.email} onChange={(e) => form.setFieldValue('email', e.currentTarget.value)} error={form.errors.email} />
+            <TextInput label="Email" value={form.values.email} readOnly />
           </Grid.Col>
           <Grid.Col span={6}>
             <TextInput label="Phone" required value={form.values.phoneNumber} onChange={(e) => form.setFieldValue('phoneNumber', e.currentTarget.value)} />
