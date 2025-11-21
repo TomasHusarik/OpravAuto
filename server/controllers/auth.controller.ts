@@ -9,13 +9,20 @@ import ErrorMessages from '@utils/errorMessages';
 import mongoose, { ObjectId } from 'mongoose';
 import Order from '@models/Order';
 
-const createToken = (_id: mongoose.Types.ObjectId) => {
-    return jwt.sign(
-        { _id },
-        env.JWT_SECRET,
-        { expiresIn: '24h' }
-    );
-}
+type JwtPayload =
+    | {
+        role: 'technician';
+        technicianId: string;
+    }
+    | {
+        role: 'customer';
+        orderId: string;
+        customerId: string;
+    };
+
+const createToken = (payload: JwtPayload) => {
+    return jwt.sign(payload, env.JWT_SECRET, { expiresIn: '24h' });
+};
 
 //POST /customers/verify-access-code - Verify access code and get token
 export const verifyAccessCode = async (req: Request, res: Response) => {
@@ -40,13 +47,17 @@ export const verifyAccessCode = async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Invalid access code' });
         }
 
-        const token = createToken(order._id);
+        const token = createToken({
+            role: 'customer',
+            orderId: order._id.toString(),
+            customerId: order.customer.toString(),
+        });
 
         return res.status(200).json({
             token,
             orderId: order._id,
             customer: order.customer,
-        }); 
+        });
     } catch (error) {
         return res.status(500).json({ error: 'Server error' });
     }
@@ -75,7 +86,11 @@ export const login = async (req: Request, res: Response) => {
         }
 
         // Generate token
-        const token = createToken(technician._id);
+        const token = createToken({
+            role: 'technician',
+            technicianId: technician._id.toString(),
+        });
+
 
         // Remove password from response
         const { password: _, ...technicianData } = technician.toObject();
@@ -115,8 +130,11 @@ export const signUp = async (req: Request, res: Response) => {
         const newTechnician = await Technician.create({ ...req.body, password: hash });
 
         // Generate token for the new technician
-        const token = createToken(newTechnician._id);
-
+        const token = createToken({
+            role: 'technician',
+            technicianId: newTechnician._id.toString(),
+        });
+        
         // Remove password from response
         const { password: _, ...technicianData } = newTechnician.toObject();
 
