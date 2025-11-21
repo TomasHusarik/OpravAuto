@@ -123,7 +123,6 @@ const CustomerOverview = (props: ICustomerOverview) => {
 
           </Grid.Col>
           <Grid.Col span={12} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', gap: 12 }}>
               <Button
                 variant="light"
                 radius="md"
@@ -142,9 +141,8 @@ const CustomerOverview = (props: ICustomerOverview) => {
                   <IconPencil stroke={1.5} size={20} />
                 }
               >
-                Edit
+                Edit Vehicle
               </Button>
-            </div>
           </Grid.Col>
           <Grid.Col span={12}>
             <Table className='table' striped highlightOnHover highlightOnHoverColor='var(--mantine-color-blue-light)'>
@@ -193,7 +191,7 @@ const CustomerOverview = (props: ICustomerOverview) => {
                 setVehicleDrawer(true);
               }}
             >
-              Add vehicle
+              Add Vehicle
             </Button>
           </Grid.Col>
         </Grid>
