@@ -3,16 +3,17 @@ import { useForm } from '@mantine/form';
 import { TextInput, Grid, Button, Title, PasswordInput } from '@mantine/core';
 import { updateCurrentUser } from '@/utils/api';
 import { useAuthContext } from '@/utils/authTypes';
- 
+import { IconDeviceFloppy } from '@tabler/icons-react';
+
 interface CurrentUser {
   token?: string;
   technician?: any;
 }
- 
+
 const User = () => {
   const [loading, setLoading] = useState(false);
   const { user: authUser, dispatch } = useAuthContext();
- 
+
   const form = useForm({
     initialValues: {
       firstName: '',
@@ -28,7 +29,7 @@ const User = () => {
       passwordConfirm: (val, values) => (values.password && val !== values.password ? 'Passwords do not match' : null),
     },
   });
- 
+
   useEffect(() => {
     // Prefer context user, fallback to localStorage
     const current = authUser || JSON.parse(localStorage.getItem('user') || 'null');
@@ -43,7 +44,7 @@ const User = () => {
       passwordConfirm: '',
     });
   }, [authUser]);
- 
+
   const handleSave = async (vals: typeof form.values) => {
     setLoading(true);
     try {
@@ -53,7 +54,7 @@ const User = () => {
         phoneNumber: vals.phoneNumber,
       };
       if (vals.password) payload.password = vals.password;
- 
+
       try {
         const res = await updateCurrentUser(payload);
         // Server returned updated user/token
@@ -89,10 +90,10 @@ const User = () => {
       setLoading(false);
     }
   };
- 
+
   return (
     <div style={{ padding: 20 }}>
-      <Title order={2} mb={16}>Můj profil</Title>
+      <Title order={1} c="var(--mantine-color-blue-light-color)" mb="md">My profile</Title>
       <form onSubmit={form.onSubmit((v) => handleSave(v))}>
         <Grid>
           <Grid.Col span={6}>
@@ -114,12 +115,22 @@ const User = () => {
             <PasswordInput label="Confirm password" value={form.values.passwordConfirm} onChange={(e) => form.setFieldValue('passwordConfirm', e.currentTarget.value)} error={form.errors.passwordConfirm} />
           </Grid.Col>
           <Grid.Col span={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button type="submit" loading={loading}>Save</Button>
+            <Button
+              type="submit"
+              variant="light"
+              radius="md"
+              loading={loading}
+              leftSection={
+                <IconDeviceFloppy stroke={1.5} size={20} />
+              }
+            >
+              Save
+            </Button>
           </Grid.Col>
         </Grid>
       </form>
-    </div>
+    </div >
   )
 }
- 
+
 export default User

@@ -166,11 +166,11 @@ const CustomerDrawer = (props: ICustomerDrawer) => {
                         <Grid.Col span={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <Button
                                 type="submit"
-                                variant="filled"
+                                variant="light"
                                 radius="md"
                                 loading={isSaving}
                                 leftSection={
-                                    <IconDeviceFloppy stroke={1.5} size={20} color="white" />
+                                    <IconDeviceFloppy stroke={1.5} size={20} />
                                 }
                             >
                                 Save

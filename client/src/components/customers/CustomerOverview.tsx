@@ -3,7 +3,7 @@ import { getCustomer, deleteVehicle } from '@/utils/api'
 import { Customer } from '@/types/Customer';
 import { Vehicle } from '@/types/Vehicle'
 import { ActionIcon, Button, Grid, Table, Textarea, TextInput, Title } from '@mantine/core';
-import { IconEdit, IconTrash, IconArrowBackUp, IconAt, IconMapPin, IconPencil, IconPhone, IconUser } from '@tabler/icons-react';
+import { IconEdit, IconTrash, IconArrowBackUp, IconAt, IconMapPin, IconPencil, IconPhone, IconUser, IconPlus } from '@tabler/icons-react';
 import { getFullName } from '@/utils/helpers';
 import { useNavigate } from 'react-router';
 import CustomerDrawer from '@/components/customers/CustomerDrawer';
@@ -31,29 +31,29 @@ const CustomerOverview = (props: ICustomerOverview) => {
     if (!customerId) return;
 
     try {
-    const usr = await getCustomer(customerId!);
-    setCustomer(usr);
+      const usr = await getCustomer(customerId!);
+      setCustomer(usr);
     } catch (error) {
       console.error('Failed to load customer:', error);
     }
   }
-    
+
 
   useEffect(() => {
     loadData();
   }, [customerId]);
-  
+
   const editVehicle = (vehicle: Vehicle) => {
     setSelectedVehicle(vehicle);
     setVehicleDrawer(true);
   }
 
-    const handleDelete = async (id: string) => {
-        const confirmed = window.confirm('Are you sure you want to delete this vehicle?');
-        if (!confirmed) return;
-        await deleteVehicle(id);
-        loadData?.();
-    }
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm('Are you sure you want to delete this vehicle?');
+    if (!confirmed) return;
+    await deleteVehicle(id);
+    loadData?.();
+  }
 
   return (
     <>
@@ -145,10 +145,49 @@ const CustomerOverview = (props: ICustomerOverview) => {
                 Edit
               </Button>
             </div>
+          </Grid.Col>
+          <Grid.Col span={12}>
+            <Table className='table' striped highlightOnHover highlightOnHoverColor='var(--mantine-color-blue-light)'>
+              <Table.Thead >
+                <Table.Tr c="var(--mantine-color-blue-light-color)" fs={'bold'}>
+                  <Table.Th>Vehicle</Table.Th>
+                  <Table.Th>Year</Table.Th>
+                  <Table.Th>Mileage</Table.Th>
+                  <Table.Th>Engine</Table.Th>
+                  <Table.Th>Color</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {customer.vehicles?.map((v) => (
+                  <Table.Tr key={v._id} style={{ cursor: 'pointer' }}>
+                    <Table.Td>{v.make} {v.model}</Table.Td>
+                    <Table.Td>{v.year}</Table.Td>
+                    <Table.Td>{v.mileage?.toLocaleString() + " km"}</Table.Td>
+                    <Table.Td>{v.engineType}</Table.Td>
+                    <Table.Td>{v.color}</Table.Td>
+                    <Table.Td>
+                      <ActionIcon size={32} radius="xl" variant="subtle" onClick={(e) => { e.stopPropagation(); editVehicle(v); }}>
+                        <IconEdit stroke={1.5} />
+                      </ActionIcon>
+                    </Table.Td>
+                    <Table.Td>
+                      <ActionIcon size={32} radius="xl" variant="subtle" onClick={(e) => { e.stopPropagation(); handleDelete(v._id!); }}>
+                        <IconTrash stroke={1.5} />
+                      </ActionIcon>
+                    </Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </Grid.Col>
+          <Grid.Col span={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <Button
-              variant="filled"
+              variant="light"
               radius="md"
               color="blue"
+              leftSection={
+                <IconPlus stroke={1.5} size={20} />
+              }
               onClick={() => {
                 setSelectedVehicle(undefined);
                 setVehicleDrawer(true);
@@ -156,40 +195,6 @@ const CustomerOverview = (props: ICustomerOverview) => {
             >
               Add vehicle
             </Button>
-          </Grid.Col>
-          <Grid.Col span={12}>
-                      <Table className='table' striped highlightOnHover highlightOnHoverColor='var(--mantine-color-blue-light)'>
-                <Table.Thead >
-                    <Table.Tr c="var(--mantine-color-blue-light-color)" fs={'bold'}>
-                        <Table.Th>Vehicle</Table.Th>
-                        <Table.Th>Year</Table.Th>
-                        <Table.Th>Mileage</Table.Th>
-                        <Table.Th>Engine</Table.Th>
-                        <Table.Th>Color</Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                    {customer.vehicles?.map((v) => (
-                        <Table.Tr key={v._id} style={{ cursor: 'pointer' }}>
-                            <Table.Td>{v.make} {v.model}</Table.Td>
-                            <Table.Td>{v.year}</Table.Td>
-                            <Table.Td>{v.mileage?.toLocaleString() + " km"}</Table.Td>
-                            <Table.Td>{v.engineType}</Table.Td>
-                            <Table.Td>{v.color}</Table.Td>
-                            <Table.Td>
-                                <ActionIcon size={32} radius="xl" variant="subtle" onClick={(e) => { e.stopPropagation(); editVehicle(v); }}>
-                                    <IconEdit stroke={1.5} />
-                                </ActionIcon>
-                            </Table.Td>
-                            <Table.Td>
-                                <ActionIcon size={32} radius="xl" variant="subtle" onClick={(e) => { e.stopPropagation(); handleDelete(v._id!); }}>
-                                    <IconTrash stroke={1.5} />
-                                </ActionIcon>
-                            </Table.Td>
-                        </Table.Tr>
-                    ))}
-                </Table.Tbody>
-            </Table>
           </Grid.Col>
         </Grid>
       }
