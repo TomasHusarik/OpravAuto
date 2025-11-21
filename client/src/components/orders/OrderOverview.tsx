@@ -107,11 +107,13 @@ const OrderOverview = (props: IOrderOverview) => {
 
     const loadData = async () => {
 
-        try {
-            const loadedCustomers = await getCustomers();
-            setCustomers(loadedCustomers);
-        } catch (error) {
-            console.error('Failed to load customers:', error);
+        if (userType === 'technician') {
+            try {
+                const loadedCustomers = await getCustomers();
+                setCustomers(loadedCustomers);
+            } catch (error) {
+                console.error('Failed to load customers:', error);
+            }
         }
 
         if (!orderId) {
@@ -127,20 +129,28 @@ const OrderOverview = (props: IOrderOverview) => {
         } catch (error) {
             console.error('Failed to load customer:', error);
         }
+
     }
 
     const loadVehicles = async () => {
-        if (!selectedCustomerId) {
-            setVehicles([]);
-            setSelectedVehicleId(null);
-            return;
-        }
+        if (viewMode === 'technician') {
 
-        try {
-            const vehicles = await getCustomerVehicles(selectedCustomerId);
-            setVehicles(vehicles);
-        } catch (error) {
-            console.error('Failed to load vehicles for customer:', error);
+            if (!selectedCustomerId) {
+                setVehicles([]);
+                setSelectedVehicleId(null);
+                return;
+            }
+
+            try {
+                const vehicles = await getCustomerVehicles(selectedCustomerId);
+                setVehicles(vehicles);
+            } catch (error) {
+                console.error('Failed to load vehicles for customer:', error);
+            }
+        } else {
+            setVehicles(order.customer.vehicles);
+            // Also set customer if userRole is customer
+            setCustomers([order.customer]);
         }
     }
 
@@ -182,6 +192,8 @@ const OrderOverview = (props: IOrderOverview) => {
             setSaving(false);
         }
     };
+
+    console.log(order)
 
     return (
         <Grid>
