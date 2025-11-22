@@ -2,16 +2,12 @@ import express from 'express';
 import requireAuth from '@middleware/requireAuth';
 import { authorizeOrderAccess } from '@middleware/authorizeOrderAccess';
 import { authorizeRole } from '@middleware/authorizeRole';
-import { createOrder, deleteOrder, downloadInvoice, getOrder, getOrders, updateOrder } from '@controllers/orders.controller';
+import { approveOrder, createOrder, deleteOrder, downloadInvoice, getOrder, getOrders, updateOrder } from '@controllers/orders.controller';
 
 const router = express.Router();
 
 // Protect all vehicle routes
 router.use(requireAuth);
-
-/**
- * techician or customer with access
- */
 
 // GET /orders/get-order - Get order detail (technician or customer with access)
 router.get('/get-order/:_id', authorizeOrderAccess, getOrder);
@@ -19,9 +15,9 @@ router.get('/get-order/:_id', authorizeOrderAccess, getOrder);
 // GET /orders/download-invoice - Download invoice (technician or customer with access)
 router.get('/download-invoice/:_id', authorizeOrderAccess, downloadInvoice);
 
-/**
- * Only technician
- */
+// PUT /orders/approve-order - Approve order (technician or customer with access)
+router.put('/approve-order/:_id', authorizeOrderAccess, approveOrder);
+
 
 // GET /orders/get-orders - Get all orders (technician only)
 router.get('/get-orders', authorizeRole('technician'), getOrders);

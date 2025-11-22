@@ -6,16 +6,16 @@ import axios from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+    baseURL: API_BASE_URL,
 });
 
 // Add a request interceptor to include the auth token
 api.interceptors.request.use((config) => {
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
-  if (user && user.token) {
-    config.headers.Authorization = `Bearer ${user.token}`;
-  }
-  return config;
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (user && user.token) {
+        config.headers.Authorization = `Bearer ${user.token}`;
+    }
+    return config;
 });
 
 //#region Helpers APIs 
@@ -66,6 +66,17 @@ export const updateOrder = async (orderData: any) => {
         return response.data;
     } catch (error) {
         console.error('Error updating order:', error);
+        throw error;
+    }
+}
+
+export const approveOrder = async (orderId: string) => {
+    try {
+        const response = await api.put(`/orders/approve-order/${orderId}`);
+        return response.data;
+    }
+    catch (error) {
+        console.error('Error approving order:', error);
         throw error;
     }
 }

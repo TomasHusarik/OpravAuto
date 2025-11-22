@@ -12,7 +12,7 @@ const LoginForm = (props: PaperProps) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<string | null>('technician');
+  const [activeTab, setActiveTab] = useState<string | null>('customer');
 
   const technicianForm = useForm({
     initialValues: {

@@ -86,6 +86,28 @@ export const updateOrder = async (req: Request, res: Response) => {
     }
 };
 
+// PUT /orders/approve-order:_id - Approve order
+export const approveOrder = async (req: Request, res: Response) => {
+    
+    try {
+        const order = await Order.findById(req.params._id);
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        if (order.status !== 'Pending') {
+            return res.status(400).json({ message: 'Only pending orders can be approved' });
+        }
+
+        order.status = 'In Progress';
+        await order.save();
+
+        res.status(200).json({ message: 'Order approved successfully', order });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
 // DELETE /orders/delete-order/:_id - Soft delete order
 export const deleteOrder = async (req: Request, res: Response) => {
     const { _id } = req.params;

@@ -1,7 +1,7 @@
 import { Customer } from '@/types/Customer';
 import { Order } from '@/types/Order';
 import { Vehicle } from '@/types/Vehicle';
-import { createOrder, downloadInvoice, getCustomers, getCustomerVehicles, getNewId, getOrder, updateOrder } from '@/utils/api';
+import { approveOrder, createOrder, downloadInvoice, getCustomers, getCustomerVehicles, getNewId, getOrder, updateOrder } from '@/utils/api';
 import { getFullName, getVehicleName } from '@/utils/helpers';
 import { Button, Grid, Select, Switch, TextInput } from '@mantine/core';
 import { IconCar, IconCheck, IconClipboardList, IconDeviceFloppy, IconDownload, IconPlus, IconUser, IconListCheck } from '@tabler/icons-react';
@@ -38,6 +38,7 @@ const OrderOverview = (props: IOrderOverview) => {
     const [selectedVehicleId, setSelectedVehicleId] = useState<string>();
 
     const [saving, setSaving] = useState<boolean>(false);
+    const [loadingApprove, setLodadingApprove] = useState<boolean>(false);
 
     const handleItemChange = useCallback((itemId: string, updatedValues: any) => {
         setOrder(prevOrder => {
@@ -104,6 +105,20 @@ const OrderOverview = (props: IOrderOverview) => {
             setSaving(false);
         }
     };
+
+    const handleApprove = async () => {
+        try {
+            setLodadingApprove(true);
+            await approveOrder(order?._id);
+        }
+        catch (error) {
+            console.error('Failed to approve order:', error);
+        }
+        finally {
+            setLodadingApprove(false);
+            loadData();
+        }
+    }
 
     const loadData = async () => {
 
@@ -296,7 +311,8 @@ const OrderOverview = (props: IOrderOverview) => {
                     <Button
                         variant="light"
                         radius="md"
-                        onClick={handleAddItem}
+                        loading={loadingApprove}
+                        onClick={handleApprove}
                         leftSection={
                             <IconCheck stroke={1.5} size={20} />
                         }
