@@ -1,3 +1,5 @@
+import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { NavbarSimple } from './components/mantine/NavbarSimple';
 import { AppShell, Burger } from "@mantine/core";
@@ -11,6 +13,7 @@ import Customer from "@/pages/Customer";
 import Order from "@/pages/Order";
 import User from "@/pages/User";
 import Contact from "@/pages/Contact";
+
 
 
 const App = () => {
