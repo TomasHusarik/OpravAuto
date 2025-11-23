@@ -33,10 +33,12 @@ export function NavbarSimple(props: INavbarSimple) {
 
   const customerData = [
     { link: `order?orderId=${orderId}`, label: 'My Order', icon: IconClipboardList },
+    { link: '/contact', label: 'Contact', icon: IconUser }
   ];
 
   const guestData = [
     { link: '/login', label: 'Login', icon: IconLogin },
+    { link: '/contact', label: 'Contact', icon: IconUser }
   ];
 
   // Update active based on current route

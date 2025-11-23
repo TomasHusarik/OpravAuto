@@ -9,6 +9,8 @@ import {
 } from '@mantine/core';
 import classes from './FeaturesCards.module.css';
 import LoginForm from '@/components/login/LoginForm';
+import Contact from '@/pages/Contact';
+import { GetInTouch } from './GetInTouch';
 
 const mockdata = [
     {
@@ -51,7 +53,7 @@ const FeaturesCards = () => {
             <Title order={2} className={classes.title} ta="center" mt="sm">
                 Professional auto service you can rely on
             </Title>
-            
+
             {/* <Group justify="center">
                 <Badge variant="filled" size="lg">
                     Trusted Auto Repair
@@ -62,11 +64,14 @@ const FeaturesCards = () => {
                 Full-service maintenance, urgent repairs and long-term care for cars, trucks and SUVs — handled by professionals.
             </Text>
 
-            <LoginForm />
-
             <SimpleGrid cols={{ base: 1, md: 3 }} spacing="xl" mt={50}>
                 {features}
             </SimpleGrid>
+
+            <div style={{ marginTop: '50px' }}>
+                <GetInTouch />
+
+            </div>
         </Container>
     );
 }

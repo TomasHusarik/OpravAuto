@@ -4,10 +4,8 @@ import { Button, Center, Divider, Group, Paper, PasswordInput, Stack, Text, Text
 import type { PaperProps } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const LoginForm = (props: PaperProps) => {
-  const navigate = useNavigate();
   const { dispatch } = useAuthContext();
 
   const [isLoading, setIsLoading] = useState(false);

@@ -1,8 +1,8 @@
-import FeaturesCards from '@/components/mantine/FeaturesCards'
+import LoginForm from '@/components/login/LoginForm'
 
 const login = () => {
   return (
-    <FeaturesCards />
+    <LoginForm />
   )
 }
 
