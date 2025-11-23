@@ -215,7 +215,7 @@ const OrderOverview = (props: IOrderOverview) => {
     return (
         <Grid>
             <Grid.Col span={12}>
-                <Title order={1} c="var(--mantine-color-blue-light-color)" mb="md">Customer Info</Title>
+                <Title order={1} c="var(--mantine-color-blue-light-color)" mb="md">Order Info</Title>
             </Grid.Col>
             <Grid.Col span={6}>
                 <TextInput
