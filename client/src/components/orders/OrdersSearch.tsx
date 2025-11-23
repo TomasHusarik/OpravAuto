@@ -34,7 +34,7 @@ const OrdersSearch = () => {
             setOrders(loadedOrders);
             setFilteredOrders(loadedOrders);
         } catch (error) {
-            console.error('Failed to load customers:', error)
+            console.error('Failed to load orders:', error)
         }
     }
 
@@ -60,7 +60,7 @@ const OrdersSearch = () => {
                         value={inputFilter}
                         onChange={(e) => setInputFilter(e.target.value)}
                         rightSection={
-                            <Tooltip label="Add new customer">
+                            <Tooltip label="Add new order">
                                 <ActionIcon size={32} radius="xl" variant="subtle" onClick={() => navigate('/order')} >
                                     <IconPlus stroke={1.5} />
                                 </ActionIcon>
