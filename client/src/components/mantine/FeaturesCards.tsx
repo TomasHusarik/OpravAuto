@@ -64,14 +64,11 @@ const FeaturesCards = () => {
                 Full-service maintenance, urgent repairs and long-term care for cars, trucks and SUVs — handled by professionals.
             </Text>
 
+            <LoginForm />
+
             <SimpleGrid cols={{ base: 1, md: 3 }} spacing="xl" mt={50}>
                 {features}
             </SimpleGrid>
-
-            <div style={{ marginTop: '50px' }}>
-                <GetInTouch />
-
-            </div>
         </Container>
     );
 }
