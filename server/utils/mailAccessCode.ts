@@ -9,7 +9,7 @@ export const sendAccessCodeEmail = async (to: string, orderId: string, accessCod
     const logoBase64 = fs.readFileSync(logoFilePath).toString('base64');
 
     await resend.emails.send({
-        from: 'OpravAuto <no-reply>@info.opravauto.com>',
+        from: 'OpravAuto <no-reply@info.opravauto.com>',
         to,
         subject: `Přístupový kód k zakázce #${orderId}`,
         html: `
