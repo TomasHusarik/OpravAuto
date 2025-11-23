@@ -34,11 +34,11 @@ jobs:
           git remote set-url origin https://github.com/TomasHusarik/OpravAuto.git &&
           git pull origin main &&
           cd client &&
-          npm install &&
+          npm ci &&
           npm run build &&
           pm2 serve --name client dist 8080 --spa &&
           cd ../server &&
-          npm install &&
+          npm ci &&
           pm2 start npm --name server -- start &&
           cd $NGINX_DIR &&
           sudo cp opravAuto.run opravAuto &&
