@@ -68,12 +68,12 @@ const LoginForm = (props: PaperProps) => {
 
   return (
     <Center>
-      <Paper radius="md" p="lg" withBorder {...props} style={{ width: 600, height: 'auto', margin: 20 }}>
-        <Text size="lg" fw={500}>
+      <Paper radius="md" p="lg" withBorder {...props} style={{ width: 850, height: 'auto', margin: "30px 0px" }}>
+        {/* <Text size="lg" fw={500}>
           Welcome to OpravAuto
-        </Text>
+        </Text> */}
 
-        <Divider my="lg" />
+        {/* <Divider my="lg" /> */}
 
         <Tabs value={activeTab} onChange={setActiveTab} >
           <Tabs.List>
