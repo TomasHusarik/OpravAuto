@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { NavbarSimple } from './components/mantine/NavbarSimple';
 import { AppShell, Burger } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
-import '@mantine/core/styles.css';
 import Login from "@/pages/Login";
 import Orders from "@/pages/Orders";
 import Customers from "@/pages/Customers";

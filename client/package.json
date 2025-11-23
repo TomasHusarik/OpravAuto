@@ -13,6 +13,7 @@
     "@mantine/core": "^8.3.3",
     "@mantine/form": "^8.3.3",
     "@mantine/hooks": "^8.3.3",
+    "@mantine/notifications": "^8.3.8",
     "@mantinex/mantine-logo": "^2.0.0",
     "@tabler/icons-react": "^3.35.0",
     "axios": "^1.12.2",

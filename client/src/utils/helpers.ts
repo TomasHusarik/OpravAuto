@@ -1,6 +1,7 @@
 import { Technician } from "@/types/Technician";
 import { Customer } from "@/types/Customer";
 import { Vehicle } from "@/types/Vehicle";
+import { notifications } from "@mantine/notifications";
 
 // Function to get full name of a user (Technician or Customer)
 export const getFullName = (user: Technician | Customer) => {
@@ -29,4 +30,20 @@ export const getUrlParameterByName = (name: string, url?: string) => {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+export const showSuccessNotification = (message: string) => {
+                notifications.show({
+                    title: 'Success',
+                    message: message,
+                    color: 'green',
+                });
+}
+
+export const showErrorNotification = (message: string) => {
+                notifications.show({
+                    title: 'Error',
+                    message: message,
+                    color: 'red',
+                });
 }
