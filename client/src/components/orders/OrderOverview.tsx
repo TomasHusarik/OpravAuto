@@ -3,7 +3,7 @@ import { Order } from '@/types/Order';
 import { Vehicle } from '@/types/Vehicle';
 import { approveOrder, createOrder, downloadInvoice, getCustomers, getCustomerVehicles, getNewId, getOrder, updateOrder } from '@/utils/api';
 import { getFullName, getVehicleName, showErrorNotification, showSuccessNotification } from '@/utils/helpers';
-import { Button, Grid, Select, Switch, TextInput } from '@mantine/core';
+import { Button, Grid, Select, Switch, TextInput, Title } from '@mantine/core';
 import { IconCar, IconCheck, IconClipboardList, IconDeviceFloppy, IconDownload, IconPlus, IconUser, IconListCheck } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react'
 import OrderItemsTable from './OrderItemsTable';
@@ -213,135 +213,129 @@ const OrderOverview = (props: IOrderOverview) => {
     console.log(order)
 
     return (
-            <Grid>
-                {/* <Grid.Col span={12}>
-                <Switch
-                    checked={viewMode === 'technician'}
-                    label="Switch mode"
-                    description={viewMode === 'technician' ? "now you are using technician view mode" : "now you are using customer view mode"}
+        <Grid>
+            <Grid.Col span={12}>
+                <Title order={1} c="var(--mantine-color-blue-light-color)" mb="md">Customer Info</Title>
+            </Grid.Col>
+            <Grid.Col span={6}>
+                <TextInput
+                    label="Order ID"
+                    leftSection={<IconClipboardList size={16} />}
+                    radius="md"
                     size="md"
-                    onChange={(event) => setViewMode(event.currentTarget.checked ? 'technician' : 'customer')}
+                    name="orderId"
+                    value={order?._id || ''}
+                    readOnly
                 />
-            </Grid.Col> */}
-                <Grid.Col span={6}>
-                    <TextInput
-                        label="Order ID"
-                        leftSection={<IconClipboardList size={16} />}
-                        radius="md"
-                        size="md"
-                        name="orderId"
-                        value={order?._id || ''}
-                        readOnly
-                    />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                    <Select
-                        label="Customer Name"
-                        leftSection={<IconUser size={16} />}
-                        radius="md"
-                        size="md"
-                        name="customer"
-                        searchable
-                        clearable
-                        maxDropdownHeight={300}
-                        data={customerOptions}
-                        value={selectedCustomerId}
-                        onChange={(value) => { setSelectedCustomerId(value) }}
-                        readOnly={viewMode === 'customer'}
-                    />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                    <Select
-                        label="Vehicle"
-                        leftSection={<IconCar size={16} />}
-                        radius="md"
-                        size="md"
-                        name="vehicle"
-                        value={selectedVehicleId}
-                        data={vehicleOptions}
-                        onChange={(value) => setSelectedVehicleId(value)}
-                        readOnly={viewMode === 'customer' && !selectedCustomerId}
-                    />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                    <Select
-                        label="Status"
-                        leftSection={<IconListCheck size={16} />}
-                        radius="md"
-                        size="md"
-                        name="status"
-                        data={statusOptions}
-                        value={order?.status}
-                        onChange={(value) => setOrder({ ...order, status: value || 'Pending' })}
-                        readOnly={viewMode === 'customer'}
-                    />
-                </Grid.Col>
-                <Grid.Col span={12}>
-                    <OrderItemsTable items={order?.items} viewMode={viewMode} handleItemChange={handleItemChange} />
-                </Grid.Col>
-                {viewMode === 'technician' &&
-                    <>
-                        <Grid.Col span={6}>
-                            <Button
-                                variant="light"
-                                radius="md"
-                                onClick={handleAddItem}
-                                leftSection={
-                                    <IconPlus stroke={1.5} size={20} />
-                                }
-                            >
-                                Add Item
-                            </Button>
-                        </Grid.Col>
-                        <Grid.Col span={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <Button
-                                variant="light"
-                                radius="md"
-                                loading={saving}
-                                onClick={handleSubmit}
-                                leftSection={
-                                    <IconDeviceFloppy stroke={1.5} size={20} />
-                                }
-                            >
-                                Save
-                            </Button>
-                        </Grid.Col>
-                    </>
-                }
-                <Grid.Col span={6}>
-                    {viewMode === 'customer' && order?.status === 'Pending' &&
+            </Grid.Col>
+            <Grid.Col span={6}>
+                <Select
+                    label="Customer Name"
+                    leftSection={<IconUser size={16} />}
+                    radius="md"
+                    size="md"
+                    name="customer"
+                    searchable
+                    clearable
+                    maxDropdownHeight={300}
+                    data={customerOptions}
+                    value={selectedCustomerId}
+                    onChange={(value) => { setSelectedCustomerId(value) }}
+                    readOnly={viewMode === 'customer'}
+                />
+            </Grid.Col>
+            <Grid.Col span={6}>
+                <Select
+                    label="Vehicle"
+                    leftSection={<IconCar size={16} />}
+                    radius="md"
+                    size="md"
+                    name="vehicle"
+                    value={selectedVehicleId}
+                    data={vehicleOptions}
+                    onChange={(value) => setSelectedVehicleId(value)}
+                    readOnly={viewMode === 'customer' && !selectedCustomerId}
+                />
+            </Grid.Col>
+            <Grid.Col span={6}>
+                <Select
+                    label="Status"
+                    leftSection={<IconListCheck size={16} />}
+                    radius="md"
+                    size="md"
+                    name="status"
+                    data={statusOptions}
+                    value={order?.status}
+                    onChange={(value) => setOrder({ ...order, status: value || 'Pending' })}
+                    readOnly={viewMode === 'customer'}
+                />
+            </Grid.Col>
+            <Grid.Col span={12}>
+                <OrderItemsTable items={order?.items} viewMode={viewMode} handleItemChange={handleItemChange} />
+            </Grid.Col>
+            {viewMode === 'technician' &&
+                <>
+                    <Grid.Col span={6}>
                         <Button
                             variant="light"
                             radius="md"
-                            loading={loadingApprove}
-                            onClick={handleApprove}
+                            onClick={handleAddItem}
                             leftSection={
-                                <IconCheck stroke={1.5} size={20} />
+                                <IconPlus stroke={1.5} size={20} />
                             }
                         >
-                            Approve
+                            Add Item
                         </Button>
-                    }
-                </Grid.Col>
-
-                {viewMode === 'customer' &&
-
-
+                    </Grid.Col>
                     <Grid.Col span={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <Button
                             variant="light"
                             radius="md"
-                            onClick={handleDownloadInvoice}
                             loading={saving}
+                            onClick={handleSubmit}
                             leftSection={
-                                <IconDownload stroke={1.5} size={20} />
+                                <IconDeviceFloppy stroke={1.5} size={20} />
                             }
                         >
-                            Invoice
+                            Save
                         </Button>
                     </Grid.Col>
+                </>
+            }
+            <Grid.Col span={6}>
+                {viewMode === 'customer' && order?.status === 'Pending' &&
+                    <Button
+                        variant="light"
+                        radius="md"
+                        loading={loadingApprove}
+                        onClick={handleApprove}
+                        leftSection={
+                            <IconCheck stroke={1.5} size={20} />
+                        }
+                    >
+                        Approve
+                    </Button>
                 }
-            </Grid>
+            </Grid.Col>
+
+            {viewMode === 'customer' &&
+
+
+                <Grid.Col span={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button
+                        variant="light"
+                        radius="md"
+                        onClick={handleDownloadInvoice}
+                        loading={saving}
+                        leftSection={
+                            <IconDownload stroke={1.5} size={20} />
+                        }
+                    >
+                        Invoice
+                    </Button>
+                </Grid.Col>
+            }
+        </Grid>
     );
 }
 

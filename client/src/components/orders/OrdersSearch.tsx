@@ -4,7 +4,7 @@ import { getOrders } from '@/utils/api';
 import { Order } from '@/types/Order';
 import { ActionIcon, Chip, Grid, Group, TextInput, Title, Tooltip } from '@mantine/core';
 import { orderStatuses } from '@/utils/const';
-import { IconClipboard } from '@tabler/icons-react';
+import { IconPlus } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 
 const OrdersSearch = () => {
@@ -62,7 +62,7 @@ const OrdersSearch = () => {
                         rightSection={
                             <Tooltip label="Add new customer">
                                 <ActionIcon size={32} radius="xl" variant="subtle" onClick={() => navigate('/order')} >
-                                    <IconClipboard stroke={1.5} />
+                                    <IconPlus stroke={1.5} />
                                 </ActionIcon>
                             </Tooltip>
                         }

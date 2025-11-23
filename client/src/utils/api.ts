@@ -81,6 +81,16 @@ export const approveOrder = async (orderId: string) => {
     }
 }
 
+export const deleteOrder = async (orderId: string) => {
+    try {
+        const response = await api.delete(`/orders/delete-order/${orderId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting order:', error);
+        throw error;
+    }
+}
+
 export const downloadInvoice = async (orderId: string) => {
     try {
         const response = await api.get(`/orders/download-invoice/${orderId}`, {

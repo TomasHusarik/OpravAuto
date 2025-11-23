@@ -141,7 +141,7 @@ const CustomerOverview = (props: ICustomerOverview) => {
                   <IconPencil stroke={1.5} size={20} />
                 }
               >
-                Edit Vehicle
+                Edit Customer
               </Button>
           </Grid.Col>
           <Grid.Col span={12}>
