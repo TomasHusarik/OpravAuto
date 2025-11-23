@@ -1,5 +1,6 @@
 import { Customer } from '@/types/Customer';
 import { Vehicle } from '@/types/Vehicle';
+import { Email } from '@/types/Email';
 import axios from 'axios';
 
 // Use environment variable or fallback to localhost for development
@@ -25,6 +26,16 @@ export const getNewId = async () => {
         return response.data.newId;
     } catch (error) {
         console.error('Error fetching new MongoDB ID:', error);
+        throw error;
+    }
+}
+
+export const sendCustomerEmail = async (emailData: Email) => {
+    try {
+        const response = await api.post('/helpers/send-customer-email', emailData);
+        return response.data;
+    } catch (error) {
+        console.error('Error sending customer email:', error);
         throw error;
     }
 }

@@ -1,9 +1,12 @@
 import express from 'express';
 import requireAuth from '@middleware/requireAuth';
-import { getNewId } from '@controllers/helpers.controller';
+import { getNewId, sendCustomerEmail } from '@controllers/helpers.controller';
 import { authorizeRole } from '@middleware/authorizeRole';
 
 const router = express.Router();
+
+// POST /helpers/send-customer-email - Send email to customer
+router.post('/send-customer-email', sendCustomerEmail);
 
 // Protect all vehicle routes
 router.use(requireAuth);
