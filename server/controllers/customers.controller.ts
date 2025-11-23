@@ -52,6 +52,10 @@ export const updateCustomer = async (req: Request, res: Response) => {
 
         Object.assign(customer, updatedData);
 
+        if (!customer.isModified()) {
+             return res.status(200).json({ updated: false });
+        }
+
         await customer.save();
 
         res.status(200).json(customer);

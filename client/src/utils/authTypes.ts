@@ -7,13 +7,15 @@ import { useNavigate } from 'react-router';
 // Define the login response interface for technicians
 export interface LoginResponse {
   technician: Technician;
+  customer?: never;
   token: string;
 }
 
 // Define customer login response
 export interface CustomerLoginResponse {
   customer: Customer;
-  orderId: string; // Order ID returned by server
+  technician?: never;
+  orderId: string;
   token: string;
 }
 

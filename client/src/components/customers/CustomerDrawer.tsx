@@ -5,6 +5,7 @@ import { IconAt, IconUser, IconPhone, IconMapPin, IconDeviceFloppy } from '@tabl
 import em from "@/utils/errorMessages";
 import { useEffect, useState } from 'react';
 import { useForm } from '@mantine/form';
+import { showErrorNotification, showSuccessNotification } from '@/utils/helpers';
 
 interface ICustomerDrawer {
     userDrawer: boolean;
@@ -59,8 +60,10 @@ const CustomerDrawer = (props: ICustomerDrawer) => {
             }
             setUserDrawer(false);
             onSaveSuccess?.();
+            showSuccessNotification('Customer saved successfully');
         } catch (error) {
             console.error('Error saving customer:', error);
+            showErrorNotification('Failed to save customer. Please try again.');
         } finally {
             setIsSaving(false);
         }

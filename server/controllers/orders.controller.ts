@@ -48,7 +48,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
         if (customerEmail) {
             try {
-                await sendAccessCodeEmail( customerEmail, newOrder._id.toString(), accessCode);
+                await sendAccessCodeEmail(customerEmail, newOrder._id.toString(), accessCode);
 
             } catch (mailError) {
                 console.error('Error sending access code email:', mailError);
@@ -78,6 +78,10 @@ export const updateOrder = async (req: Request, res: Response) => {
 
         Object.assign(order, updatedData);
 
+        if (!order.isModified()) {
+            return res.status(200).json({ updated: false });
+        }
+
         await order.save();
 
         res.status(200).json(order);
@@ -88,7 +92,7 @@ export const updateOrder = async (req: Request, res: Response) => {
 
 // PUT /orders/approve-order:_id - Approve order
 export const approveOrder = async (req: Request, res: Response) => {
-    
+
     try {
         const order = await Order.findById(req.params._id);
 

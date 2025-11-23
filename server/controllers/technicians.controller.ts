@@ -19,10 +19,10 @@ const createToken = (_id: mongoose.Types.ObjectId) => {
 // PUT /technicians/update - Update current technician profile (protected)
 export const updateProfile = async (req: Request, res: Response) => {
 	try {
-		const userId = (req as any).user?._id;
-		if (!userId) return res.status(401).json({ error: ErrorMessages.unauthorized });
+		const { _id, firstName, lastName, email, phoneNumber, password } = req.body;
 
-		const { firstName, lastName, email, phoneNumber, password } = req.body;
+		if (!_id) return res.status(401).json({ error: ErrorMessages.unauthorized });
+
 
 		// Basic validation
 		if (email && !validator.isEmail(email)) {
@@ -30,7 +30,7 @@ export const updateProfile = async (req: Request, res: Response) => {
 		}
 
 		// Find existing user
-		const technician = await Technician.findById(userId).select('+password');
+		const technician = await Technician.findById(_id).select('+password');
 		if (!technician) return res.status(404).json({ error: 'Technician not found' });
 
 		// If email changed, ensure it's not taken

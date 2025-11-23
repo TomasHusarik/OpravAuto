@@ -4,6 +4,7 @@ import { TextInput, Grid, Button, Title, PasswordInput } from '@mantine/core';
 import { updateCurrentUser } from '@/utils/api';
 import { useAuthContext } from '@/utils/authTypes';
 import { IconDeviceFloppy } from '@tabler/icons-react';
+import { showErrorNotification, showSuccessNotification } from '@/utils/helpers';
 
 interface CurrentUser {
   token?: string;
@@ -12,7 +13,7 @@ interface CurrentUser {
 
 const User = () => {
   const [loading, setLoading] = useState(false);
-  const { user: authUser, dispatch } = useAuthContext();
+  const { user, dispatch } = useAuthContext();
 
   const form = useForm({
     initialValues: {
@@ -31,10 +32,8 @@ const User = () => {
   });
 
   useEffect(() => {
-    // Prefer context user, fallback to localStorage
-    const current = authUser || JSON.parse(localStorage.getItem('user') || 'null');
-    if (!current) return;
-    const tech = current.technician || current.user || current;
+    if (!user) return;
+    const tech = user.technician || user.customer;
     form.setValues({
       firstName: tech?.firstName || '',
       lastName: tech?.lastName || '',
@@ -43,12 +42,13 @@ const User = () => {
       password: '',
       passwordConfirm: '',
     });
-  }, [authUser]);
+  }, [user]);
 
   const handleSave = async (vals: typeof form.values) => {
     setLoading(true);
     try {
       const payload: any = {
+        _id: user.technician?._id || user.customer?._id,
         firstName: vals.firstName,
         lastName: vals.lastName,
         phoneNumber: vals.phoneNumber,
@@ -57,34 +57,15 @@ const User = () => {
 
       try {
         const res = await updateCurrentUser(payload);
-        // Server returned updated user/token
-        if (res?.technician || res?.token) {
-          const technician = res.technician || res.user || payload;
-          const token = res.token || (authUser && (authUser as any).token) || '';
+        if ((res?.technician || res?.customer ) && res?.token) {
+          const technician = res.technician || res.customer;
+          const token = res.token;
           const newStore = { technician, token };
-          localStorage.setItem('user', JSON.stringify(newStore));
-          // update global auth state
-          dispatch({ type: 'LOGIN', payload: newStore as any });
-          alert('Profile updated');
-        } else {
-          // No server response with updated data, update local copy and keep existing token
-          const current = JSON.parse(localStorage.getItem('user') || 'null') || {};
-          const technician = { ...(current.technician || {}), ...payload };
-          const token = current.token || (authUser && (authUser as any).token) || '';
-          const newStore = { technician, token };
-          localStorage.setItem('user', JSON.stringify(newStore));
-          dispatch({ type: 'LOGIN', payload: newStore as any });
-          alert('Profile updated locally (server not available)');
+          dispatch({ type: 'LOGIN', payload: newStore});
+          showSuccessNotification('Profile updated successfully');
         }
       } catch (err) {
-        // On network/server error: update local copy and auth context
-        const current = JSON.parse(localStorage.getItem('user') || 'null') || {};
-        const technician = { ...(current.technician || {}), ...payload };
-        const token = current.token || (authUser && (authUser as any).token) || '';
-        const newStore = { technician, token };
-        localStorage.setItem('user', JSON.stringify(newStore));
-        dispatch({ type: 'LOGIN', payload: newStore as any });
-        alert('Profile updated locally (server call failed)');
+        showErrorNotification('Failed to update profile. Please try again.');
       }
     } finally {
       setLoading(false);
