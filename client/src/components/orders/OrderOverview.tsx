@@ -254,7 +254,7 @@ const OrderOverview = (props: IOrderOverview) => {
                     value={selectedVehicleId}
                     data={vehicleOptions}
                     onChange={(value) => setSelectedVehicleId(value)}
-                    readOnly={viewMode === 'customer' && !selectedCustomerId}
+                    readOnly={viewMode === 'customer' || !selectedCustomerId}
                 />
             </Grid.Col>
             <Grid.Col span={6}>
