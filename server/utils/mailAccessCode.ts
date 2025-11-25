@@ -147,12 +147,12 @@ export const sendAccessCodeEmail = async (to: string, orderId: string, accessCod
 
       <p>Dobrý den,</p>
 
-      <p>Vaše zakázka <span class="order-id">#691f6e4ff3429f424a68f3ae</span> je zaregistrována v našem systému.
+      <p>Vaše zakázka <span class="order-id">${orderId}</span> je zaregistrována v našem systému.
         Pro přístup k detailům a sledování stavu zakázky použijte níže uvedený přístupový kód:</p>
 
       <div class="code-box">
         <div class="label">Váš přístupový kód</div>
-        <div class="code">69V07ZR1</div>
+        <div class="code">${accessCode}</div>
       </div>
 
       <p><strong>Jak postupovat:</strong></p>
