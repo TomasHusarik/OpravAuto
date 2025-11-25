@@ -1,5 +1,6 @@
 import { Order } from '@/types/Order';
 import { deleteOrder } from '@/utils/api';
+import { showErrorNotification, showSuccessNotification } from '@/utils/helpers';
 import { ActionIcon, NumberInput, Pagination, Table } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
@@ -31,8 +32,10 @@ const OrdersTable = (props: IOrdersTable) => {
         try {
             await deleteOrder(orderId);
             await loadData?.();
+            showSuccessNotification('Order deleted successfully');
         } catch (error) {
             console.error('Failed to delete order:', error);
+            showErrorNotification('Failed to delete order');
         }
     }
 

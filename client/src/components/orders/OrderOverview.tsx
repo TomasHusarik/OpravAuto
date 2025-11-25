@@ -72,8 +72,6 @@ const OrderOverview = (props: IOrderOverview) => {
             totalPrice: 0,
         };
 
-        console.log('Adding new item:', newItem);
-
         setOrder(prevOrder => ({
             ...prevOrder,
             items: [...(prevOrder?.items || []), newItem],
@@ -132,7 +130,7 @@ const OrderOverview = (props: IOrderOverview) => {
         }
 
         if (!orderId) {
-            setOrder({ _id: await getNewId() });
+            setOrder({ _id: await getNewId(), status: 'Pending' });
             return;
         }
 

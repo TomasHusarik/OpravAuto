@@ -4,7 +4,7 @@ import { Customer } from '@/types/Customer';
 import { Vehicle } from '@/types/Vehicle'
 import { ActionIcon, Button, Grid, Table, Textarea, TextInput, Title } from '@mantine/core';
 import { IconEdit, IconTrash, IconArrowBackUp, IconAt, IconMapPin, IconPencil, IconPhone, IconUser, IconPlus } from '@tabler/icons-react';
-import { getFullName } from '@/utils/helpers';
+import { getFullName, showErrorNotification, showSuccessNotification } from '@/utils/helpers';
 import { useNavigate } from 'react-router';
 import CustomerDrawer from '@/components/customers/CustomerDrawer';
 import VehicleDrawer from '@/components/customers/VehicleDrawer';
@@ -51,8 +51,14 @@ const CustomerOverview = (props: ICustomerOverview) => {
   const handleDelete = async (id: string) => {
     const confirmed = window.confirm('Are you sure you want to delete this vehicle?');
     if (!confirmed) return;
-    await deleteVehicle(id);
-    loadData?.();
+    try {
+      await deleteVehicle(id);
+      loadData();
+      showSuccessNotification('Vehicle deleted successfully');
+    } catch (error) {
+      console.error('Failed to delete vehicle:', error);
+      showErrorNotification('Failed to delete vehicle');
+    }
   }
 
   return (

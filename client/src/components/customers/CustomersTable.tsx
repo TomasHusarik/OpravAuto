@@ -1,5 +1,6 @@
 import { Customer } from '@/types/Customer';
 import { deleteCustomer } from '@/utils/api';
+import { showErrorNotification, showSuccessNotification } from '@/utils/helpers';
 import { ActionIcon, NumberInput, Pagination, Table } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
 import { IconEdit, IconTrash } from '@tabler/icons-react';
@@ -32,8 +33,14 @@ const CustomersTable = (props: ICustomersTable) => {
     const handleDelete = async (id: string) => {
         const confirmed = window.confirm('Are you sure you want to delete this customer?');
         if (!confirmed) return;
-        await deleteCustomer(id);
-        loadData?.();
+        try {
+            await deleteCustomer(id);
+            loadData?.();
+            showSuccessNotification('Customer deleted successfully');
+        } catch (error) {
+            console.error('Failed to delete customer:', error);
+            showErrorNotification('Failed to delete customer');
+        }
     }
 
     const editCustomer = (customer: Customer) => {
