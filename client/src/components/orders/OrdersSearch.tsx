@@ -15,8 +15,8 @@ const OrdersSearch = () => {
 
     const navigate = useNavigate();
 
-    const filterData = async () => {
-        const filtered = orders.filter((order) => {
+    const filterData = (ordersToFilter: Order[]) => {
+        const filtered = ordersToFilter.filter((order) => {
             const matchesOrderId = order._id?.toLowerCase().includes(inputFilter.toLowerCase());
             const matchesName = order.customer ?
                 (`${order.customer.firstName} ${order.customer.lastName}`.toLowerCase().includes(inputFilter.toLowerCase()))
@@ -32,15 +32,15 @@ const OrdersSearch = () => {
         try {
             const loadedOrders = await getOrders();
             setOrders(loadedOrders);
-            setFilteredOrders(loadedOrders);
+            filterData(loadedOrders);
         } catch (error) {
             console.error('Failed to load orders:', error)
         }
     }
 
     useEffect(() => {
-        filterData();
-    }, [status, inputFilter]);
+        filterData(orders);
+    }, [status, inputFilter, orders]);
 
     useEffect(() => {
         loadData();
@@ -79,7 +79,7 @@ const OrdersSearch = () => {
                     </Chip.Group>
                 </Grid.Col>
                 <Grid.Col span={12}>
-                    <OrdersTable orders={filteredOrders} />
+                    <OrdersTable orders={filteredOrders} loadData={loadData} />
                 </Grid.Col>
             </Grid>
 

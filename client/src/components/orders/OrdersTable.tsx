@@ -8,10 +8,11 @@ import { useNavigate } from 'react-router-dom';
 
 interface IOrdersTable {
     orders: Order[];
+    loadData?: () => Promise<void>;
 }
 
 const OrdersTable = (props: IOrdersTable) => {
-    const { orders } = props;
+    const { orders, loadData } = props;
 
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -26,10 +27,10 @@ const OrdersTable = (props: IOrdersTable) => {
         .sort((a, b) => a.createdAt!.localeCompare(b.createdAt!))
         .slice((page - 1) * debouncedPageSize, page * debouncedPageSize)
 
-    const handleDeleteOrder = (orderId: string) => {
+    const handleDeleteOrder = async (orderId: string) => {
         try {
-            deleteOrder(orderId);
-            window.location.reload();
+            await deleteOrder(orderId);
+            await loadData?.();
         } catch (error) {
             console.error('Failed to delete order:', error);
         }
